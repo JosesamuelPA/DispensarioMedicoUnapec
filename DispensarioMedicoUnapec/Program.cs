@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace DispensarioMedicoUnapec
 {
     public class Program
@@ -5,7 +7,8 @@ namespace DispensarioMedicoUnapec
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddDbContext<DispensarioMedicoUnapec.Data.ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
