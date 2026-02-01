@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Medicamento>
+﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Marca>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,13 +19,7 @@
                 @Html.DisplayNameFor(model => model.Descripcion)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dosis)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tipo_Farmaco)
+                @Html.DisplayNameFor(model => model.Pais)
             </th>
             <th></th>
         </tr>
@@ -40,13 +34,7 @@
                 @Html.DisplayFor(modelItem => item.Descripcion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dosis)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tipo_Farmaco.Nombre)
+                @Html.DisplayFor(modelItem => item.Pais)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

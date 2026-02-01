@@ -15,7 +15,7 @@ namespace DispensarioMedicoUnapec.Data
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<Tipo_Farmaco> Tipo_Farmacos { get; set; }
         public DbSet<Medicamento> Medicamentos { get; set; }
-
-
+        public DbSet<Marca> Marcas { get; set; }
+        public DbSet<Ubicacion_Medicamento> Ubicacion_Medicamentos { get; set; }
     }
 }

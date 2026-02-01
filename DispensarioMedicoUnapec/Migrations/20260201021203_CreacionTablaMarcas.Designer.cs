@@ -4,6 +4,7 @@ using DispensarioMedicoUnapec.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DispensarioMedicoUnapec.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260201021203_CreacionTablaMarcas")]
+    partial class CreacionTablaMarcas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,33 +141,6 @@ namespace DispensarioMedicoUnapec.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tipo_Farmacos");
-                });
-
-            modelBuilder.Entity("DispensarioMedicoUnapec.Models.Ubicacion_Medicamento", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Celda")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EstadoMedicamento")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Estante")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("Tramo")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ubicacion_Medicamentos");
                 });
 
             modelBuilder.Entity("DispensarioMedicoUnapec.Models.Medicamento", b =>

@@ -10,23 +10,22 @@ using DispensarioMedicoUnapec.Models;
 
 namespace DispensarioMedicoUnapec.Controllers
 {
-    public class MedicamentosController : Controller
+    public class Ubicacion_MedicamentosController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MedicamentosController(ApplicationDbContext context)
+        public Ubicacion_MedicamentosController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Medicamentos
+        // GET: Ubicacion_Medicamentos
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Medicamentos.Include(m => m.Tipo_Farmaco);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.Ubicacion_Medicamentos.ToListAsync());
         }
 
-        // GET: Medicamentos/Details/5
+        // GET: Ubicacion_Medicamentos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +33,39 @@ namespace DispensarioMedicoUnapec.Controllers
                 return NotFound();
             }
 
-            var medicamento = await _context.Medicamentos
-                .Include(m => m.Tipo_Farmaco)
+            var ubicacion_Medicamento = await _context.Ubicacion_Medicamentos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (medicamento == null)
+            if (ubicacion_Medicamento == null)
             {
                 return NotFound();
             }
 
-            return View(medicamento);
+            return View(ubicacion_Medicamento);
         }
 
-        // GET: Medicamentos/Create
+        // GET: Ubicacion_Medicamentos/Create
         public IActionResult Create()
         {
-            ViewData["Id_Tipo_Farmaco"] = new SelectList(_context.Tipo_Farmacos, "Id", "Nombre");
             return View();
         }
 
-        // POST: Medicamentos/Create
+        // POST: Ubicacion_Medicamentos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,Estado,Dosis,Id_Tipo_Farmaco")] Medicamento medicamento)
+        public async Task<IActionResult> Create([Bind("Id,Estante,Tramo,Celda,EstadoMedicamento")] Ubicacion_Medicamento ubicacion_Medicamento)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(medicamento);
+                _context.Add(ubicacion_Medicamento);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id_Tipo_Farmaco"] = new SelectList(_context.Tipo_Farmacos, "Id", "Nombre", medicamento.Id_Tipo_Farmaco);
-            return View(medicamento);
+            return View(ubicacion_Medicamento);
         }
 
-        // GET: Medicamentos/Edit/5
+        // GET: Ubicacion_Medicamentos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +73,22 @@ namespace DispensarioMedicoUnapec.Controllers
                 return NotFound();
             }
 
-            var medicamento = await _context.Medicamentos.FindAsync(id);
-            if (medicamento == null)
+            var ubicacion_Medicamento = await _context.Ubicacion_Medicamentos.FindAsync(id);
+            if (ubicacion_Medicamento == null)
             {
                 return NotFound();
             }
-            ViewData["Id_Tipo_Farmaco"] = new SelectList(_context.Tipo_Farmacos, "Id", "Nombre", medicamento.Id_Tipo_Farmaco);
-            return View(medicamento);
+            return View(ubicacion_Medicamento);
         }
 
-        // POST: Medicamentos/Edit/5
+        // POST: Ubicacion_Medicamentos/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Estado,Dosis,Id_Tipo_Farmaco")] Medicamento medicamento)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Estante,Tramo,Celda,EstadoMedicamento")] Ubicacion_Medicamento ubicacion_Medicamento)
         {
-            if (id != medicamento.Id)
+            if (id != ubicacion_Medicamento.Id)
             {
                 return NotFound();
             }
@@ -102,12 +97,12 @@ namespace DispensarioMedicoUnapec.Controllers
             {
                 try
                 {
-                    _context.Update(medicamento);
+                    _context.Update(ubicacion_Medicamento);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MedicamentoExists(medicamento.Id))
+                    if (!Ubicacion_MedicamentoExists(ubicacion_Medicamento.Id))
                     {
                         return NotFound();
                     }
@@ -118,11 +113,10 @@ namespace DispensarioMedicoUnapec.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Id_Tipo_Farmaco"] = new SelectList(_context.Tipo_Farmacos, "Id", "Nombre", medicamento.Id_Tipo_Farmaco);
-            return View(medicamento);
+            return View(ubicacion_Medicamento);
         }
 
-        // GET: Medicamentos/Delete/5
+        // GET: Ubicacion_Medicamentos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +124,34 @@ namespace DispensarioMedicoUnapec.Controllers
                 return NotFound();
             }
 
-            var medicamento = await _context.Medicamentos
-                .Include(m => m.Tipo_Farmaco)
+            var ubicacion_Medicamento = await _context.Ubicacion_Medicamentos
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (medicamento == null)
+            if (ubicacion_Medicamento == null)
             {
                 return NotFound();
             }
 
-            return View(medicamento);
+            return View(ubicacion_Medicamento);
         }
 
-        // POST: Medicamentos/Delete/5
+        // POST: Ubicacion_Medicamentos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var medicamento = await _context.Medicamentos.FindAsync(id);
-            if (medicamento != null)
+            var ubicacion_Medicamento = await _context.Ubicacion_Medicamentos.FindAsync(id);
+            if (ubicacion_Medicamento != null)
             {
-                _context.Medicamentos.Remove(medicamento);
+                _context.Ubicacion_Medicamentos.Remove(ubicacion_Medicamento);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MedicamentoExists(int id)
+        private bool Ubicacion_MedicamentoExists(int id)
         {
-            return _context.Medicamentos.Any(e => e.Id == id);
+            return _context.Ubicacion_Medicamentos.Any(e => e.Id == id);
         }
     }
 }
