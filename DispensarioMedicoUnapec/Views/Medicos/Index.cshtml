@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Paciente>
+﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Medico>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,16 +25,16 @@
                 @Html.DisplayNameFor(model => model.Cedula)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Telefono)
+                @Html.DisplayNameFor(model => model.NumeroCarnet)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Numero_Carnet)
+                @Html.DisplayNameFor(model => model.TandaLaboral)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tipo_Paciente)
+                @Html.DisplayNameFor(model => model.Especialidad)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
+                @Html.DisplayNameFor(model => model.EstadoMedico)
             </th>
             <th></th>
         </tr>
@@ -55,16 +55,16 @@
                 @Html.DisplayFor(modelItem => item.Cedula)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Telefono)
+                @Html.DisplayFor(modelItem => item.NumeroCarnet)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Numero_Carnet)
+                @Html.DisplayFor(modelItem => item.TandaLaboral)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Tipo_Paciente)
+                @Html.DisplayFor(modelItem => item.Especialidad)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+                @Html.DisplayFor(modelItem => item.EstadoMedico)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

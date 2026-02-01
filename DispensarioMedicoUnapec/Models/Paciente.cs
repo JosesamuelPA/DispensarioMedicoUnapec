@@ -3,6 +3,18 @@
 
 namespace DispensarioMedicoUnapec.Models
 {
+    public enum TipoPaciente
+    {
+        Estudiante,
+        Empleado,
+        Profesor,
+        Otros
+    }
+    public enum Estado
+    {
+        A,
+        I
+    }
     public class Paciente
     {
         // Clave Primaria de la Tabla
@@ -31,6 +43,9 @@ namespace DispensarioMedicoUnapec.Models
         [Phone]
         public string Telefono { get; set; }
 
+        public string Numero_Carnet { get; set; }
+        public TipoPaciente Tipo_Paciente { get; set; }
+        public Estado Estado { get; set; }
         public string NombreCompleto
         {
             get { return $"{Nombre} {Apellido}";}

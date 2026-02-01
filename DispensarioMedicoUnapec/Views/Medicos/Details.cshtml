@@ -1,4 +1,4 @@
-﻿@model DispensarioMedicoUnapec.Models.Paciente
+﻿@model DispensarioMedicoUnapec.Models.Medico
 
 @{
     ViewData["Title"] = "Details";
@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Paciente</h4>
+    <h4>Medico</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -35,28 +35,28 @@
             @Html.DisplayFor(model => model.Cedula)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefono)
+            @Html.DisplayNameFor(model => model.NumeroCarnet)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefono)
+            @Html.DisplayFor(model => model.NumeroCarnet)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Numero_Carnet)
+            @Html.DisplayNameFor(model => model.TandaLaboral)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Numero_Carnet)
+            @Html.DisplayFor(model => model.TandaLaboral)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tipo_Paciente)
+            @Html.DisplayNameFor(model => model.Especialidad)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tipo_Paciente)
+            @Html.DisplayFor(model => model.Especialidad)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
+            @Html.DisplayNameFor(model => model.EstadoMedico)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
+            @Html.DisplayFor(model => model.EstadoMedico)
         </dd>
     </dl>
 </div>
