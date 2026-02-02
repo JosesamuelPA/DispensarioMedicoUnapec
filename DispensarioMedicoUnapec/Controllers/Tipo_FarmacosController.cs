@@ -54,7 +54,7 @@ namespace DispensarioMedicoUnapec.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Estado")] Tipo_Farmaco tipo_Farmaco)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,EstadoFarmaco")] Tipo_Farmaco tipo_Farmaco)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace DispensarioMedicoUnapec.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Estado")] Tipo_Farmaco tipo_Farmaco)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,EstadoFarmaco")] Tipo_Farmaco tipo_Farmaco)
         {
             if (id != tipo_Farmaco.Id)
             {

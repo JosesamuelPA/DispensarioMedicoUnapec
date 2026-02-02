@@ -1,6 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace DispensarioMedicoUnapec.Models
 {
+    public enum EstadoFarmaco
+    {
+        Solido,
+        Liquido,
+        Semisolido,
+        Gaseoso
+    }
     public class Tipo_Farmaco
     {
         [Key]
@@ -11,7 +18,7 @@ namespace DispensarioMedicoUnapec.Models
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = "El Estado del Farmaco es obligatorio")]
-        public string Estado { get; set; }
+        public EstadoFarmaco EstadoFarmaco { get; set; }
 
     }
 }
