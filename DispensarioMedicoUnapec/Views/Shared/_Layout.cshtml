@@ -64,8 +64,8 @@
                 }
             }
         }
-        <div class="d-flex flex-column flex-shrink-0 text-bg-dark col-3 vh-100">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none px-2"><span class="fs-4">Dispensario Medico</span> </a> <hr> <ul class="nav nav-pills flex-column mb-auto">
+        <div class="d-flex flex-column flex-shrink-0 text-bg-dark vh-100 pt-2" style="width:20%">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none ps-2"><span class="fs-4">Dispensario Medico</span> </a> <hr> <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a class="nav-link @isActive("Home")"  aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">
                         <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>
@@ -93,12 +93,24 @@
                 <li>
                     <a class="nav-link @isActive("Tipo_Farmacos")" asp-area="" asp-controller="Tipo_Farmacos" asp-action="Index">
                         <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Tipo_Farmacos"></use></svg>
-                        Tipo_Farmacos
+                        Tipo de Farmacos
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link @isActive("Marcas")" asp-area="" asp-controller="Marcas" asp-action="Index">
+                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Marcas"></use></svg>
+                        Marcas
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link @isActive("Ubicacion_Medicamentos")" asp-area="" asp-controller="Ubicacion_Medicamentos" asp-action="Index">
+                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Ubicacion_Medicamentos"></use></svg>
+                        Ubicación Medicamentos
                     </a>
                 </li>
             </ul> <hr> <div class="dropdown"> <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"> <strong>mdo</strong> </a> <ul class="dropdown-menu dropdown-menu-dark text-small shadow" style=""> <li><a class="dropdown-item" href="#">New project...</a></li> <li><a class="dropdown-item" href="#">Settings</a></li> <li><a class="dropdown-item" href="#">Profile</a></li> <li><hr class="dropdown-divider"></li> <li><a class="dropdown-item" href="#">Sign out</a></li> </ul> </div>
         </div>
-        <div class="d-flex flex-column c-10 px-3">
+        <div class="d-flex flex-column ps-3" style="width:85%; height: 100vh;overflow: auto;">
             @RenderBody()
         </div>
     </main>

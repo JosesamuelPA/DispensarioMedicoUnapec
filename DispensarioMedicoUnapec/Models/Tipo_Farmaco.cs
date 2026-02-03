@@ -16,7 +16,7 @@ namespace DispensarioMedicoUnapec.Models
         [Required(ErrorMessage = "El Nombre del Tipo de Farmaco es obligatorio")]
         [StringLength(255)]
         public string Nombre { get; set; }
-
+        [Display(Name ="Estado de Farmaco")]
         [Required(ErrorMessage = "El Estado del Farmaco es obligatorio")]
         public EstadoFarmaco EstadoFarmaco { get; set; }
 

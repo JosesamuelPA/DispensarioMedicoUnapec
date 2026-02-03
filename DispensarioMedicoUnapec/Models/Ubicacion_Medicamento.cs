@@ -34,6 +34,7 @@ namespace DispensarioMedicoUnapec.Models
         public int Celda { get; set; }
 
         [Required]
+        [Display(Name ="Estado Medicamento")]
         public EstadoMedicamento EstadoMedicamento { get; set; }
 
     }

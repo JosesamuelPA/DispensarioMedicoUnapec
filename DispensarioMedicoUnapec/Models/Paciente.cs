@@ -42,8 +42,9 @@ namespace DispensarioMedicoUnapec.Models
 
         [Phone]
         public string Telefono { get; set; }
-
+        [Display(Name ="Numero Carnet")]
         public string Numero_Carnet { get; set; }
+        [Display(Name ="Tipo Paciente")]
         public TipoPaciente Tipo_Paciente { get; set; }
         public Estado Estado { get; set; }
         public string NombreCompleto

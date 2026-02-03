@@ -23,6 +23,7 @@ namespace DispensarioMedicoUnapec.Models
         [Display(Name = "Tipo de Farmaco" )]
         public int Id_Tipo_Farmaco { get; set; }
 
+        [Display(Name = "Tipo de Farmaco" )]
         [ForeignKey("Id_Tipo_Farmaco")]
         public virtual Tipo_Farmaco? Tipo_Farmaco { get; set; }
     }

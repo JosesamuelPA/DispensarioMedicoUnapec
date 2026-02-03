@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Pacientes</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Agregar nuevo paciente</a>
 </p>
 <table class="table table-bordered table-hover">
     <thead>
@@ -40,9 +40,6 @@
         </tr>
     </thead>
     <tbody>
-        @{
-            Console.WriteLine();
-        }
         @foreach (var item in Model)
         {
         <tr>

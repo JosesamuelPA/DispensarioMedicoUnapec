@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace DispensarioMedicoUnapec.Models
 {
@@ -32,9 +33,12 @@ namespace DispensarioMedicoUnapec.Models
         [Required]
         [StringLength(11)]
         public string Cedula { get; set; }
+        [Display(Name = "Numero Carnet")]
         public string NumeroCarnet { get; set; }
+        [Display(Name = "Tanda Laboral")]
         public TandaLaboral TandaLaboral { get; set; }
         public string Especialidad { get; set; }
+        [Display(Name = "Estado Medico")]
         public EstadoMedico EstadoMedico { get; set; }
     }
 }
