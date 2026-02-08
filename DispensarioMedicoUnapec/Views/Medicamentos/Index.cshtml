@@ -9,9 +9,9 @@
 <p>
     <a asp-action="Create">Crear nuevo Medicamento</a>
 </p>
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover text-center">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
@@ -27,7 +27,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Tipo_Farmaco)
             </th>
-            @* <th></th> *@
+            <th>Gestionar</th>
         </tr>
     </thead>
     <tbody>

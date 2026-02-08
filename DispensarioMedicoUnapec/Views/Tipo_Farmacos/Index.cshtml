@@ -9,16 +9,16 @@
 <p>
     <a asp-action="Create">Agregar nuevo tipo de farmacos</a>
 </p>
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover text-center">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.EstadoFarmaco)
             </th>
-            <th></th>
+            <th>Gestionar</th>
         </tr>
     </thead>
     <tbody>

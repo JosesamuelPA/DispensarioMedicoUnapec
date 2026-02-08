@@ -9,9 +9,9 @@
 <p>
     <a asp-action="Create">Agregar nuevo paciente</a>
 </p>
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover text-center">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
@@ -34,9 +34,9 @@
                 @Html.DisplayNameFor(model => model.Tipo_Paciente)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Estado)
+                @Html.DisplayNameFor(model => model.Estado_Paciente)
             </th>
-            <th></th>
+            <th>Gestionar</th>
         </tr>
     </thead>
     <tbody>
@@ -65,7 +65,7 @@
                     @Html.DisplayFor(modelItem => item.Tipo_Paciente)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Estado)
+                    @Html.DisplayFor(modelItem => item.Estado_Paciente)
                 </td>
                 <partial name="_MenuOptions" model="item.Id" />
             </tr>

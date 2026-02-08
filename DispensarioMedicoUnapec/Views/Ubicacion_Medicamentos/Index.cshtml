@@ -9,9 +9,9 @@
 <p>
     <a asp-action="Create">Agregar nueva ubicación</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-hover text-center">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 @Html.DisplayNameFor(model => model.Estante)
             </th>
@@ -24,7 +24,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.EstadoMedicamento)
             </th>
-            <th></th>
+            <th>Gestionar</th>
         </tr>
     </thead>
     <tbody>

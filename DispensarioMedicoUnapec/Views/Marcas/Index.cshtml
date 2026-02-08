@@ -9,9 +9,9 @@
 <p>
     <a asp-action="Create">Crear nueva marca</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-hover text-center">
     <thead>
-        <tr>
+        <tr class="table-primary">
             <th>
                 @Html.DisplayNameFor(model => model.Nombre)
             </th>
@@ -21,7 +21,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Pais)
             </th>
-            <th></th>
+            <th>Gestionar</th>
         </tr>
     </thead>
     <tbody>
@@ -38,7 +38,6 @@
                     @Html.DisplayFor(modelItem => item.Pais)
                 </td>
                 <partial name="_MenuOptions" model="item.Id" />
-
             </tr>
         }
     </tbody>

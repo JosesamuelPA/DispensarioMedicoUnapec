@@ -10,7 +10,7 @@ namespace DispensarioMedicoUnapec.Models
         Profesor,
         Otros
     }
-    public enum Estado
+    public enum EstadoPaciente
     {
         A,
         I
@@ -46,7 +46,8 @@ namespace DispensarioMedicoUnapec.Models
         public string Numero_Carnet { get; set; }
         [Display(Name ="Tipo Paciente")]
         public TipoPaciente Tipo_Paciente { get; set; }
-        public Estado Estado { get; set; }
+        [Display(Name = "Estado")]
+        public EstadoPaciente Estado_Paciente { get; set; }
         public string NombreCompleto
         {
             get { return $"{Nombre} {Apellido}";}
