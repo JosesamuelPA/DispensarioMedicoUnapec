@@ -1,8 +1,126 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Panel Principal";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<div class="container-fluid py-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h1 class="h3 fw-bold" style="color: #0d7ff2;">
+                Bienvenido al panel, @User.Identity.Name
+            </h1>
+            <p class="text-muted">Resumen general del Dispensario Médico APEC.</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 border border-primary-subtle rounded-pill">
+                <span class="material-symbols-outlined align-middle fs-6 me-1">calendar_today</span>
+                @DateTime.Now.ToString("dd 'de' MMMM, yyyy")
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="card-title text-muted fw-bold mb-0">Pacientes Atendidos</h6>
+                        <div class="p-2 bg-primary bg-opacity-10 rounded-3 text-primary">
+                            <span class="material-symbols-outlined">group</span>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold mb-1">24</h2>
+                    <small class="text-success fw-medium">
+                        <span class="material-symbols-outlined fs-6 align-middle">trending_up</span>
+                        +12% vs ayer
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="card-title text-muted fw-bold mb-0">Citas de Hoy</h6>
+                        <div class="p-2 bg-warning bg-opacity-10 rounded-3 text-warning">
+                            <span class="material-symbols-outlined">schedule</span>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold mb-1">8</h2>
+                    <small class="text-muted">4 en la próxima hora</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="card-title text-muted fw-bold mb-0">Alertas de Inventario</h6>
+                        <div class="p-2 bg-danger bg-opacity-10 rounded-3 text-danger">
+                            <span class="material-symbols-outlined">warning</span>
+                        </div>
+                    </div>
+                    <h2 class="fw-bold mb-1 text-danger">3</h2>
+                    <small class="text-danger fw-medium">Medicamentos por agotarse</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 rounded-4" style="background-color: #0d7ff2;">
+                <div class="card-body text-white d-flex flex-column justify-content-center">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="card-title text-white-50 fw-bold mb-0">Acción Rápida</h6>
+                        <span class="material-symbols-outlined">bolt</span>
+                    </div>
+                    <button class="btn btn-light w-100 fw-bold text-primary shadow-sm rounded-3 mt-auto py-2">
+                        <span class="material-symbols-outlined align-middle fs-5 me-1">add_circle</span>
+                        Nueva Consulta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+            <h5 class="fw-bold" style="color: #0d7ff2;">Últimos Pacientes Ingresados</h5>
+        </div>
+        <div class="card-body px-4">
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle">
+                    <thead class="border-bottom text-muted small">
+                        <tr>
+                            <th>NOMBRE</th>
+                            <th>MOTIVO</th>
+                            <th>FECHA</th>
+                            <th>ESTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-secondary bg-opacity-10 p-2 rounded-circle me-3">
+                                        <span class="material-symbols-outlined text-secondary">person</span>
+                                    </div>
+                                    <span class="fw-medium">Juan Pérez</span>
+                                </div>
+                            </td>
+                            <td class="text-muted">Chequeo de rutina</td>
+                            <td class="text-muted">Hoy, 10:30 AM</td>
+                            <td><span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill">Completado</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-secondary bg-opacity-10 p-2 rounded-circle me-3">
+                                        <span class="material-symbols-outlined text-secondary">person</span>
+                                    </div>
+                                    <span class="fw-medium">María González</span>
+                                </div>
+                            </td>
+                            <td class="text-muted">Dolor de cabeza</td>
+                            <td class="text-muted">Hoy, 11:15 AM</td>
+                            <td><span class=" badge

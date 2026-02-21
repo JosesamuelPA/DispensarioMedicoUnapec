@@ -1,0 +1,129 @@
+﻿@model DispensarioMedicoUnapec.Views.RegisterViewModel
+@{
+    Layout = null; // Evita que cargue el menú de navegación y el footer global
+    ViewData["Title"] = "APEC MEDS - Registro";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+            --apec-blue: #0d7ff2;
+            --apec-bg: #E3F2FD;
+        }
+
+        body {
+            background-color: var(--apec-bg);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .text-apec {
+            color: var(--apec-blue);
+        }
+
+        .btn-apec {
+            background-color: var(--apec-blue);
+            color: white;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+            .btn-apec:hover {
+                background-color: #0b6bce;
+                color: white;
+            }
+
+        .card-login {
+            max-width: 450px;
+            width: 100%;
+            border-radius: 1rem;
+        }
+
+        .icon-container {
+            background-color: rgba(13, 127, 242, 0.1);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .input-group-text {
+            background-color: white;
+            border-right: none;
+            color: rgba(13, 127, 242, 0.6);
+        }
+
+        .form-control {
+            border-left: none;
+        }
+
+            .form-control:focus {
+                box-shadow: 0 0 0 0.25rem rgba(13, 127, 242, 0.25);
+                border-color: #dee2e6;
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center py-4">
+
+        <div class="card card-login shadow-lg border-0">
+            <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                    <div class="icon-container mb-3 text-apec">
+                        <span class="material-symbols-outlined fs-1">person_add</span>
+                    </div>
+                    <h1 class="h4 fw-bold text-apec mb-1">CREAR CUENTA</h1>
+                    <p class="text-muted small">Únete a APEC MEDS</p>
+                </div>
+
+                <form asp-controller="Auth" asp-action="Register" method="post">
+
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle"><span class="material-symbols-outlined fs-5">person</span></span>
+                            <input asp-for="Username" type="text" class="form-control border-primary-subtle py-2" placeholder="NUEVO USUARIO" required />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle"><span class="material-symbols-outlined fs-5">lock</span></span>
+                            <input asp-for="Password" type="password" class="form-control border-primary-subtle py-2" placeholder="CONTRASEÑA" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle"><span class="material-symbols-outlined fs-5">lock_reset</span></span>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control border-primary-subtle py-2" placeholder="CONFIRMAR CONTRASEÑA" required />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-apec w-100 py-2 fw-bold shadow-sm">REGISTRARSE</button>
+
+                    <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-secondary w-100 py-2 fw-bold mt-3 shadow-sm">
+                        VOLVER AL LOGIN
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>

@@ -1,0 +1,311 @@
+﻿@* namespace DispensarioMedicoUnapec.Views.Auth
+{
+    public class Login
+    {
+    } *@
+
+@model DispensarioMedicoUnapec.Views.LoginViewModel.LoginViewModel;
+@{
+    // Si tienes un _Layout.cshtml, puedes dejar esto comentado.
+    // Si esta página es independiente, usa Layout = null;
+    Layout = null;
+    ViewData["Title"] = "APEC MEDS - Iniciar Sesión";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Variables con los colores institucionales que pediste */
+        :root {
+            --apec-blue: #0d7ff2;
+            --apec-bg: #E3F2FD;
+        }
+
+        body {
+            background-color: var(--apec-bg);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .text-apec {
+            color: var(--apec-blue);
+        }
+
+        .bg-apec {
+            background-color: var(--apec-blue);
+            color: white;
+        }
+
+        /* Botón personalizado */
+        .btn-apec {
+            background-color: var(--apec-blue);
+            color: white;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+            .btn-apec:hover {
+                background-color: #0b6bce; /* Un tono más oscuro para el hover */
+                color: white;
+            }
+
+        /* Contenedor principal del Login */
+        .card-login {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 1rem;
+        }
+
+        /* Círculo del logo */
+        .icon-container {
+            background-color: rgba(13, 127, 242, 0.1);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        /* Ajustes para que los iconos de los inputs se vean como en el diseño original */
+        .input-group-text {
+            background-color: white;
+            border-right: none;
+            color: rgba(13, 127, 242, 0.6);
+        }
+
+        .form-control {
+            border-left: none;
+        }
+
+            .form-control:focus {
+                box-shadow: 0 0 0 0.25rem rgba(13, 127, 242, 0.25);
+                border-color: #dee2e6;
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid vh-100 d-flex flex-column justify-content-center align-items-center">
+
+        <div class="card card-login shadow-lg border-0">
+            <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                    <div class="icon-container mb-3 text-apec">
+                        <span class="material-symbols-outlined fs-1">local_pharmacy</span>
+                    </div>
+                    <h1 class="h4 fw-bold text-apec mb-1">APEC MEDS</h1>
+                    <p class="text-muted small">Portal del Dispensario Médico</p>
+                </div>
+
+                <form asp-controller="Auth" asp-action="Login" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="visually-hidden">Usuario</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
+                            </span>
+                            <input asp-for="Username" type="text" class="form-control border-primary-subtle py-2" placeholder="USUARIO" required />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="visually-hidden">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">lock</span>
+                            </span>
+                            <input asp-for="Password" type="password" class="form-control border-primary-subtle py-2" placeholder="CONTRASEÑA" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-apec w-100 py-2 fw-bold shadow-sm">
+                        INICIAR SESIÓN
+                    </button>
+
+                    <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-primary w-100 py-2 fw-bold mt-3 shadow-sm" style="border-color: var(--apec-blue); color: var(--apec-blue);">
+                        CREAR CUENTA
+                    </a>
+                </form>
+
+                <div class="text-center mt-4">
+                    <a href="#" class="text-apec text-decoration-none small fw-medium">¿Olvidaste tu contraseña?</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-4 text-muted small text-center">
+            © 2026 APEC MEDS. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>
+}
+@* 
+namespace DispensarioMedicoUnapec.Views.Auth
+{
+    public class Login
+    {
+    }
+
+@model DispensarioMedicoUnapec.Views.LoginViewModel.LoginViewModel;
+@{
+    // Si tienes un _Layout.cshtml, puedes dejar esto comentado.
+    // Si esta página es independiente, usa Layout = null;
+    // Layout = null;
+    ViewData["Title"] = "APEC MEDS - Iniciar Sesión";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Variables con los colores institucionales que pediste */
+        :root {
+            --apec-blue: #0d7ff2;
+            --apec-bg: #E3F2FD;
+        }
+
+        body {
+            background-color: var(--apec-bg);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .text-apec {
+            color: var(--apec-blue);
+        }
+
+        .bg-apec {
+            background-color: var(--apec-blue);
+            color: white;
+        }
+
+        /* Botón personalizado */
+        .btn-apec {
+            background-color: var(--apec-blue);
+            color: white;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+            .btn-apec:hover {
+                background-color: #0b6bce; /* Un tono más oscuro para el hover */
+                color: white;
+            }
+
+        /* Contenedor principal del Login */
+        .card-login {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 1rem;
+        }
+
+        /* Círculo del logo */
+        .icon-container {
+            background-color: rgba(13, 127, 242, 0.1);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        /* Ajustes para que los iconos de los inputs se vean como en el diseño original */
+        .input-group-text {
+            background-color: white;
+            border-right: none;
+            color: rgba(13, 127, 242, 0.6);
+        }
+
+        .form-control {
+            border-left: none;
+        }
+
+            .form-control:focus {
+                box-shadow: 0 0 0 0.25rem rgba(13, 127, 242, 0.25);
+                border-color: #dee2e6;
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid vh-100 d-flex flex-column justify-content-center align-items-center">
+
+        <div class="card card-login shadow-lg border-0">
+            <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                    <div class="icon-container mb-3 text-apec">
+                        <span class="material-symbols-outlined fs-1">local_pharmacy</span>
+                    </div>
+                    <h1 class="h4 fw-bold text-apec mb-1">APEC MEDS</h1>
+                    <p class="text-muted small">Portal del Dispensario Médico</p>
+                </div>
+
+                <form asp-controller="Auth" asp-action="Login" method="post">
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="visually-hidden">Usuario</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
+                            </span>
+                            <input asp-for="Username" type="text" class="form-control border-primary-subtle py-2" placeholder="USUARIO" required />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="visually-hidden">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text border-primary-subtle">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">lock</span>
+                            </span>
+                            <input asp-for="Password" type="password" class="form-control border-primary-subtle py-2" placeholder="CONTRASEÑA" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-apec w-100 py-2 fw-bold shadow-sm">
+                        INICIAR SESIÓN
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <a href="#" class="text-apec text-decoration-none small fw-medium">¿Olvidaste tu contraseña?</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-4 text-muted small text-center">
+            © 2026 APEC MEDS. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+</body>
+</html>
+} *@

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace DispensarioMedicoUnapec
@@ -12,6 +13,15 @@ namespace DispensarioMedicoUnapec
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+
+            // Configurar Autenticación por Cookies
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Auth/Login"; // A dónde enviar al usuario si no tiene sesión
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Tiempo de expiración de la sesión
+                });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -25,9 +35,15 @@ namespace DispensarioMedicoUnapec
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
+
+
+            app.UseAuthentication(); // 1. Primero verifica quién eres
+            app.UseAuthorization();  // 2. Luego verifica qué puedes hacer
+
 
             app.MapStaticAssets();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")

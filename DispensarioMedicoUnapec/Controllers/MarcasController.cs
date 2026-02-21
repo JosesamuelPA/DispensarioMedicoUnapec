@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DispensarioMedicoUnapec.Data;
 using DispensarioMedicoUnapec.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DispensarioMedicoUnapec.Controllers
 {
+    [Authorize]
     public class MarcasController : Controller
     {
         private readonly ApplicationDbContext _context;
