@@ -1,0 +1,40 @@
+﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Visita>
+
+    <h2>Registro de Visitas</h2>
+
+    <form asp-action="Buscar">
+
+        <input type="text" name="paciente" placeholder="Buscar por paciente" />
+
+        <input type="text" name="medico" placeholder="Buscar por médico" />
+
+        <button type="submit">Buscar</button>
+
+    </form>
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Médico</th>
+                <th>Motivo</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+{
+            <tr>
+                <td>@item.Paciente</td>
+                <td>@item.Medico</td>
+                <td>@item.Motivo</td>
+                <td>@item.Fecha.ToShortDateString()</td>
+            </tr>
+}
+
+        </tbody>
+
+    </table>

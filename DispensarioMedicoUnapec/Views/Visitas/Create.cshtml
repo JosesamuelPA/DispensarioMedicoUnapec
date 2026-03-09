@@ -1,0 +1,23 @@
+﻿@model DispensarioMedicoUnapec.Models.Visita
+
+<h2>Registrar Visita</h2>
+
+<form asp-action="Create">
+
+    <label>Paciente</label>
+    <input asp-for="Paciente" class="form-control" />
+
+    <label>Médico</label>
+    <input asp-for="Medico" class="form-control" />
+
+    <label>Motivo</label>
+    <input asp-for="Motivo" class="form-control" />
+
+    <label>Fecha</label>
+    <input asp-for="Fecha" type="date" class="form-control" />
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+
+</form>

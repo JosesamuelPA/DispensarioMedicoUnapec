@@ -21,6 +21,7 @@ namespace DispensarioMedicoUnapec.Data
 
         // Esta propiedad representa tu tabla en SQL Server
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Visita> Visitas { get; set; }
 
     }
 }
