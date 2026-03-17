@@ -1,40 +1,94 @@
 ﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Visita>
 
-    <h2>Registro de Visitas</h2>
+    @{
+ViewData["Title"] = "Registro de Visitas";
+    }
 
-    <form asp-action="Buscar">
+    <h1>Registro de Visitas</h1>
 
+    <p>
+        <a asp-action="Create">Registrar nueva Visita</a>
+    </p>
+
+    <form asp-action="Buscar" method="get" class="mb-3">
+
+        ```
         <input type="text" name="paciente" placeholder="Buscar por paciente" />
 
         <input type="text" name="medico" placeholder="Buscar por médico" />
 
-        <button type="submit">Buscar</button>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        ```
 
     </form>
 
-    <table class="table">
+    <table class="table table-bordered table-hover text-center">
 
+        ```
         <thead>
-            <tr>
-                <th>Paciente</th>
-                <th>Médico</th>
-                <th>Motivo</th>
-                <th>Fecha</th>
+            <tr class="table-primary">
+                <th>
+                    Paciente
+                </th>
+                <th>
+                    Médico
+                </th>
+                <th>
+                    Motivo
+                </th>
+                <th>
+                    Fecha
+                </th>
+                <th>
+                    Gestionar
+                </th>
             </tr>
         </thead>
 
         <tbody>
+            ```
 
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
+{
+foreach (var item in Model)
 {
             <tr>
-                <td>@item.Paciente</td>
-                <td>@item.Medico</td>
-                <td>@item.Motivo</td>
-                <td>@item.Fecha.ToShortDateString()</td>
+
+                ```
+                <td>
+                    @Html.DisplayFor(modelItem => item.Paciente.Nombre)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Medico.Nombre)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Motivo)
+                </td>
+
+                <td>
+                    @item.Fecha.ToString("dd/MM/yyyy")
+                </td>
+
+                <partial name="_MenuOptions" model="item.Id" />
+
+            </tr>
+}
+```
+
+}
+else
+{
+            <tr>
+                <td colspan="5" class="text-center text-muted">
+                    No hay visitas registradas.
+                </td>
             </tr>
 }
 
+            ```
         </tbody>
+        ```
 
     </table>
