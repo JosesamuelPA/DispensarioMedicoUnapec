@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using DispensarioMedicoUnapec.Data;
 using DispensarioMedicoUnapec.Models;
-using System.Linq;
 
 namespace DispensarioMedicoUnapec.Controllers
 {
@@ -14,47 +19,152 @@ namespace DispensarioMedicoUnapec.Controllers
             _context = context;
         }
 
-        // LISTA
-        public IActionResult Index()
+        // GET: Visitas
+        public async Task<IActionResult> Index()
         {
-            var visitas = _context.Visitas.ToList();
-            return View(visitas);
+            var applicationDbContext = _context.Visitas.Include(v => v.Medico).Include(v => v.Paciente);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // REGISTRAR VISITA
-        public IActionResult Create()
+        // GET: Visitas/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Create(Visita visita)
-        {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                _context.Visitas.Add(visita);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                return NotFound();
             }
+
+            var visita = await _context.Visitas
+                .Include(v => v.Medico)
+                .Include(v => v.Paciente)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (visita == null)
+            {
+                return NotFound();
+            }
+
             return View(visita);
         }
 
-        // CONSULTA POR CRITERIOS
-        public IActionResult Buscar(string paciente, string medico)
+        // GET: Visitas/Create
+        public IActionResult Create()
         {
-            var visitas = _context.Visitas.AsQueryable();
+            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido");
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido");
+            return View();
+        }
 
-            if (!string.IsNullOrEmpty(paciente))
+        // POST: Visitas/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,PacienteId,MedicoId,Motivo,Fecha")] Visita visita)
+        {
+            if (ModelState.IsValid)
             {
-                visitas = visitas.Where(v => v.Paciente.Contains(paciente));
+                _context.Add(visita);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido", visita.PacienteId);
+            return View(visita);
+        }
+
+        // GET: Visitas/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
-            if (!string.IsNullOrEmpty(medico))
+            var visita = await _context.Visitas.FindAsync(id);
+            if (visita == null)
             {
-                visitas = visitas.Where(v => v.Medico.Contains(medico));
+                return NotFound();
+            }
+            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido", visita.PacienteId);
+            return View(visita);
+        }
+
+        // POST: Visitas/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PacienteId,MedicoId,Motivo,Fecha")] Visita visita)
+        {
+            if (id != visita.Id)
+            {
+                return NotFound();
             }
 
-            return View("Index", visitas.ToList());
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(visita);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!VisitaExists(visita.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido", visita.PacienteId);
+            return View(visita);
+        }
+
+        // GET: Visitas/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var visita = await _context.Visitas
+                .Include(v => v.Medico)
+                .Include(v => v.Paciente)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (visita == null)
+            {
+                return NotFound();
+            }
+
+            return View(visita);
+        }
+
+        // POST: Visitas/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var visita = await _context.Visitas.FindAsync(id);
+            if (visita != null)
+            {
+                _context.Visitas.Remove(visita);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool VisitaExists(int id)
+        {
+            return _context.Visitas.Any(e => e.Id == id);
         }
     }
 }
