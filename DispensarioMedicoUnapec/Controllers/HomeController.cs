@@ -1,5 +1,6 @@
 using DispensarioMedicoUnapec.Data;
 using DispensarioMedicoUnapec.Models;
+using DispensarioMedicoUnapec.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
