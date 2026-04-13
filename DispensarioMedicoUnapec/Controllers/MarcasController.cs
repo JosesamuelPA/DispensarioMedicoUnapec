@@ -92,6 +92,7 @@ namespace DispensarioMedicoUnapec.Controllers
             {
                 _context.Add(marca);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Marca registrada correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(marca);
@@ -143,6 +144,7 @@ namespace DispensarioMedicoUnapec.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Datos de la marca actualizados.";
                 return RedirectToAction(nameof(Index));
             }
             return View(marca);
@@ -178,6 +180,7 @@ namespace DispensarioMedicoUnapec.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Marca eliminada del sistema.";
             return RedirectToAction(nameof(Index));
         }
 

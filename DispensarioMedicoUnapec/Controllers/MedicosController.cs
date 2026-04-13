@@ -114,6 +114,7 @@ namespace DispensarioMedicoUnapec.Controllers
             {
                 _context.Add(medico);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Médico registrado correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             return View(medico);
@@ -165,6 +166,7 @@ namespace DispensarioMedicoUnapec.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Datos del médico actualizados.";
                 return RedirectToAction(nameof(Index));
             }
             return View(medico);
@@ -200,6 +202,7 @@ namespace DispensarioMedicoUnapec.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Médico eliminado del sistema.";
             return RedirectToAction(nameof(Index));
         }
 

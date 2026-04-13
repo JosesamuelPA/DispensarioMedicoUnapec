@@ -104,6 +104,7 @@ namespace DispensarioMedicoUnapec.Controllers
             {
                 _context.Add(visita);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Consulta registrada correctamente.";
                 return RedirectToAction(nameof(Index));
             }
             var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
@@ -165,6 +166,7 @@ namespace DispensarioMedicoUnapec.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Datos de la consulta actualizados.";
                 return RedirectToAction(nameof(Index));
             }
             var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
@@ -207,6 +209,7 @@ namespace DispensarioMedicoUnapec.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Registro de consulta eliminado.";
             return RedirectToAction(nameof(Index));
         }
 

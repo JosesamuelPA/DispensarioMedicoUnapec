@@ -117,6 +117,7 @@ namespace DispensarioMedicoUnapec.Controllers
             {
                 _context.Add(medicamento);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Medicamento añadido al inventario.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Id_Tipo_Farmaco"] = new SelectList(_context.Tipo_Farmacos, "Id", "Nombre", medicamento.Id_Tipo_Farmaco);
@@ -172,6 +173,7 @@ namespace DispensarioMedicoUnapec.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Informacion del medicamento actualizada.";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Id_Tipo_Farmaco"] = new SelectList(_context.Tipo_Farmacos, "Id", "Nombre", medicamento.Id_Tipo_Farmaco);
@@ -211,6 +213,7 @@ namespace DispensarioMedicoUnapec.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Medicamento eliminado del inventario.";
             return RedirectToAction(nameof(Index));
         }
 

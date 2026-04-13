@@ -120,7 +120,7 @@ namespace DispensarioMedicoUnapec.Controllers
                 await _context.SaveChangesAsync();
 
                 // 4. Redirigir al login
-                TempData["SuccessMessage"] = "Cuenta creada exitosamente. Por favor, inicia sesión.";
+                TempData["SuccessMessage"] = "¡Cuenta creada con éxito! Ya puedes iniciar sesión.";
                 return RedirectToAction("Login", "Auth");
             }
 

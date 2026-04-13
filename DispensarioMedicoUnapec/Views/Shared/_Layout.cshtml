@@ -168,9 +168,84 @@
 
         .sort-icon.active { opacity: 1; color: #3b82f6; }
         th:hover .sort-icon { opacity: 0.7; }
+
+        /* ── Gadget Notification Style ── */
+        #notificationgadget {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            min-width: 320px;
+            max-width: 90%;
+            padding: 12px 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(209, 213, 219, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            cursor: pointer;
+        }
+
+        #notificationgadget.show { top: 25px; }
+
+        #notificationgadget.success { border-left: 5px solid #10b981; }
+        #notificationgadget.error { border-left: 5px solid #ef4444; }
+        #notificationgadget.info { border-left: 5px solid #3b82f6; }
+
+        #notificationgadget .icon-wrap {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        #notificationgadget.success .icon-wrap { background: rgba(16, 185, 129, 0.15); color: #059669; }
+        #notificationgadget.error .icon-wrap { background: rgba(239, 68, 68, 0.15); color: #dc2626; }
+        #notificationgadget.info .icon-wrap { background: rgba(59, 130, 246, 0.15); color: #2563eb; }
+
+        #notificationgadget .message {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        /* ── Print Adjustments ── */
+        @@media print {
+            body, .main-content, .vh-100, .h-100 { 
+                overflow: visible !important; 
+                height: auto !important; 
+                display: block !important; 
+            }
+            #sidebar, #notificationgadget, #sidebarToggle, .d-print-none { 
+                display: none !important; 
+            }
+            .main-content { 
+                margin: 0 !important; 
+                padding: 0 !important; 
+                width: 100% !important; 
+            }
+            .p-4.overflow-auto.h-100 {
+                overflow: visible !important;
+                height: auto !important;
+                padding: 0 !important;
+            }
+        }
     </style>
 </head>
 <body class="m-0 overflow-hidden">
+    <!-- Gadget Notification -->
+    <div id="notificationgadget" onclick="hideGadget()">
+        <div class="icon-wrap" id="gadgetIcon">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="message" id="gadgetMessage">Acción completada con éxito</div>
+    </div>
+
     <main role="main" class="d-flex flex-nowrap vh-100">
         @{
             string isActive(string CurrentController)
@@ -373,7 +448,48 @@
                 el.addEventListener('mouseenter', () => el.style.background = 'rgba(255,255,255,0.07)');
                 el.addEventListener('mouseleave', () => el.style.background = '');
             });
+
+            // Lógica para mostrar Gadget si hay mensajes en TempData
+            @if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null || TempData["ToastMessage"] != null)
+            {
+                var msg = TempData["SuccessMessage"] ?? TempData["ErrorMessage"] ?? TempData["ToastMessage"];
+                var type = TempData["SuccessMessage"] != null ? "success" : (TempData["ErrorMessage"] != null ? "error" : "info");
+                
+                <text>
+                showGadget("@msg", "@type");
+                </text>
+            }
         });
+
+        function showGadget(message, type = 'info') {
+            const gadget = document.getElementById('notificationgadget');
+            const msgEl = document.getElementById('gadgetMessage');
+            const iconWrap = document.getElementById('gadgetIcon');
+            
+            gadget.className = '';
+            gadget.classList.add(type);
+            msgEl.textContent = message;
+
+            // Change icon based on type
+            let iconHtml = '<i class="bi bi-info-circle-fill"></i>';
+            if(type === 'success') iconHtml = '<i class="bi bi-check-circle-fill"></i>';
+            if(type === 'error') iconHtml = '<i class="bi bi-exclamation-triangle-fill"></i>';
+            iconWrap.innerHTML = iconHtml;
+
+            setTimeout(() => {
+                gadget.classList.add('show');
+            }, 100);
+
+            // Auto-hide after 4 seconds
+            setTimeout(() => {
+                hideGadget();
+            }, 4500);
+        }
+
+        function hideGadget() {
+            const gadget = document.getElementById('notificationgadget');
+            gadget.classList.remove('show');
+        }
     </script>
 </body>
 </html>
