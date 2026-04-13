@@ -1,3 +1,4 @@
+using DispensarioMedicoUnapec.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,6 @@ namespace DispensarioMedicoUnapec
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<DispensarioMedicoUnapec.Data.ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
 
 
@@ -24,22 +24,19 @@ namespace DispensarioMedicoUnapec
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            //app.UseAuthorization();
 
 
-            app.UseAuthentication(); // 1. Primero verifica quién eres
-            app.UseAuthorization();  // 2. Luego verifica qué puedes hacer
+            app.UseAuthentication(); 
+            app.UseAuthorization(); 
 
 
             app.MapStaticAssets();
@@ -48,6 +45,21 @@ namespace DispensarioMedicoUnapec
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    DbInitializer.Initialize(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "Ocurrió un error al sembrar la base de datos de prueba.");
+                }
+            }
 
             app.Run();
         }

@@ -1,42 +1,42 @@
-﻿@model DispensarioMedicoUnapec.Models.Visita
+@model DispensarioMedicoUnapec.Models.Visita
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de la Visita";
 }
 
-<h1>Details</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-header bg-info text-white py-3 d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i>Historial de Consulta</h5>
+                    <span class="badge bg-light text-dark">@Model.Fecha.ToString("dd/MM/yyyy h:mm tt")</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-12 text-center mb-4">
+                            <div class="display-1 text-info opacity-50 mb-2">
+                                <i class="bi bi-h-circle"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">Paciente: @Model.Paciente.Nombre @Model.Paciente.Apellido</h3>
+                            <p class="text-muted"><i class="bi bi-heart-pulse-fill text-danger me-1"></i>Atendido por: @Model.Medico.Nombre @Model.Medico.Apellido</p>
+                        </div>
+                    </div>
 
-<div>
-    <h4>Visita</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Paciente)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Paciente.Apellido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Medico)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Medico.Apellido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Motivo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Motivo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fecha)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                    <h6 class="text-secondary fw-bold border-bottom pb-2 mb-3">Motivo de la Visita</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <div class="p-4 bg-light rounded shadow-sm text-center">
+                                <span class="fs-6 text-dark fst-italic">"@Model.Motivo"</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white p-3 border-top d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Regresar al historial</a>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="bi bi-pencil-square me-2"></i>Editar Datos</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

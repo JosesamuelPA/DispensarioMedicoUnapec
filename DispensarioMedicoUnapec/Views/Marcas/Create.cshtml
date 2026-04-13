@@ -1,41 +1,59 @@
-﻿@model DispensarioMedicoUnapec.Models.Marca
+@model DispensarioMedicoUnapec.Models.Marca
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nueva Marca";
 }
 
-<h1>Create</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-briefcase me-2"></i>Registrar Nueva Marca</h5>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<h4>Marca</h4>
-<hr />
-<div class="">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nombre" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Ej. Laboratorios Amadita" />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-secondary fw-semibold">País de Origen</label>
+                                    @{
+                                        ViewData["FieldName"]  = "Pais";
+                                        ViewData["FieldId"]    = "Pais";
+                                        ViewData["FieldValue"] = "";
+                                        ViewData["Required"]   = false;
+                                    }
+                                    <partial name="_PaisSelector" />
+                                    <span asp-validation-for="Pais" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group mb-2">
+                                    <label asp-for="Descripcion" class="form-label text-secondary fw-semibold">Descripción o Detalles</label>
+                                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light border px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Guardar Marca</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Pais" class="control-label"></label>
-                <input asp-for="Pais" class="form-control" />
-                <span asp-validation-for="Pais" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

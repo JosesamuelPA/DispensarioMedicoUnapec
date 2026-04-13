@@ -1,36 +1,44 @@
-﻿@model DispensarioMedicoUnapec.Models.Tipo_Farmaco
+@model DispensarioMedicoUnapec.Models.Tipo_Farmaco
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuevo Tipo de Fármaco";
 }
 
-<h1>Create</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-tag-fill me-2"></i>Registrar Tipo de Fármaco</h5>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<h4>Tipo_Farmaco</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <div class="form-group mb-4">
+                                    <label asp-for="Nombre" class="form-label text-secondary fw-semibold">Nombre de la Categoría</label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Ej. Analgésico, Antibiótico..." />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label asp-for="EstadoFarmaco" class="form-label text-secondary fw-semibold">Estado</label>
+                                    <select asp-for="EstadoFarmaco" class="form-select" asp-items="Html.GetEnumSelectList<DispensarioMedicoUnapec.Models.EstadoFarmaco>()"></select>
+                                    <span asp-validation-for="EstadoFarmaco" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light border px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Guardar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="EstadoFarmaco" class="control-label"></label>
-                <select asp-for="EstadoFarmaco" class="form-control" asp-items="Html.GetEnumSelectList<EstadoFarmaco>()"></select>
-                <span asp-validation-for="EstadoFarmaco" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

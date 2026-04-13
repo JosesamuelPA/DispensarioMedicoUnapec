@@ -1,158 +1,372 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @* <title>@ViewData["Title"] - DispensarioMedicoUnapec</title> *@
-    <title>Dispensario Medico Unapec</title>
+    <title>Dispensario Médico UNAPEC</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DispensarioMedicoUnapec.styles.css" asp-append-version="true" />
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== SIDEBAR REDESIGN ===== */
+        #sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            transition: width 0.28s cubic-bezier(.4,0,.2,1), min-width 0.28s cubic-bezier(.4,0,.2,1);
+            border-right: 1px solid rgba(255,255,255,0.06);
+            /* overflow-x removed — sidebar-text handles its own clipping so the dropdown is not cut */
+        }
+        #sidebar.collapsed {
+            width: 68px;
+            min-width: 68px;
+        }
+        .sidebar-text {
+            transition: opacity 0.18s ease, max-width 0.28s ease;
+            opacity: 1;
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        #sidebar.collapsed .sidebar-text,
+        #sidebar.collapsed .dropdown-toggle::after {
+            opacity: 0;
+            max-width: 0;
+            pointer-events: none;
+        }
+        #sidebar.collapsed .sidebar-icon { margin-right: 0 !important; }
+        #sidebar.collapsed .nav-link { justify-content: center; padding-left: 0; padding-right: 0; }
+        #sidebar.collapsed .sidebar-section-label { opacity: 0; height: 0; overflow: hidden; margin: 0 !important; }
+        #sidebar.collapsed .user-card {
+            justify-content: center;
+            padding: 10px 0;
+            background: transparent;
+            gap: 0;
+        }
+        #sidebar.collapsed .user-card .sidebar-text,
+        #sidebar.collapsed .user-card .bi-chevron-up {
+            display: none;
+        }
+        #sidebar.collapsed .user-card:hover { background: rgba(255,255,255,0.08); border-radius: 10px; }
+
+        /* Nav items */
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 9px 14px;
+            border-radius: 10px;
+            color: rgba(255,255,255,0.62);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.15s ease, color 0.15s ease;
+            position: relative;
+        }
+        .sidebar-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: #ffffff;
+        }
+        .sidebar-link.active {
+            background: rgba(59,130,246,0.18);
+            color: #93c5fd;
+        }
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 3px;
+            background: #3b82f6;
+            border-radius: 0 3px 3px 0;
+        }
+        .sidebar-icon {
+            font-size: 1.1rem;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            padding: 6px 14px 2px;
+            margin-top: 6px;
+            transition: opacity 0.18s ease;
+        }
+        /* Scrollbar */
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+        /* User card */
+        .user-card {
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .user-card:hover { background: rgba(255,255,255,0.1); }
+        .user-avatar {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .user-avatar i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            color: white;
+            line-height: 1;
+        }
+        /* Toggle button */
+        #sidebarToggle {
+            background: rgba(255,255,255,0.07);
+            border: none;
+            color: rgba(255,255,255,0.6);
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+        #sidebarToggle:hover { background: rgba(255,255,255,0.14); color: white; }
+        .btn:not(.dropdown-item):not(.nav-link):not(.accordion-button):not(.btn-close):not(.pagination .page-link) {
+            border-radius: 50rem !important;
+        }
+
+        .btn-sm:not(.dropdown-item):not(.nav-link):not(.accordion-button):not(.btn-close):not(.pagination .page-link) {
+            border-radius: 50rem !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* ── Sortable table icons ── */
+        .sort-icon { font-size: 0.72rem; opacity: 0.35; vertical-align: middle; transition: opacity 0.15s; }
+
+        .sort-icon.active { opacity: 1; color: #3b82f6; }
+        th:hover .sort-icon { opacity: 0.7; }
+    </style>
 </head>
-<body class="m-0">
-    @* <header> *@
-    @* <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-0">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Dispensario Medico Unapec</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tipo_Farmacos" asp-action="Index">Tipos Farmacos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Medicamentos" asp-action="Index">Medicamentos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Marcas" asp-action="Index">Marcas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Ubicacion_Medicamentos" asp-action="Index">Ubicacion Medicamentos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Medicos" asp-action="Index">Medicos</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav> *@
-    @* </header> *@
-    <main role="main" class="d-flex flex-nowrap">
+<body class="m-0 overflow-hidden">
+    <main role="main" class="d-flex flex-nowrap vh-100">
         @{
-            string test = "active";
             string isActive(string CurrentController)
             {
                 if (ViewContext.RouteData.Values["Controller"]?.ToString() == CurrentController)
-                {
-
                     return "active";
-                }
-                else
-                {
-                    return "text-white";
-                }
+                return "";
             }
         }
-        <div class="d-flex flex-column flex-shrink-0 text-bg-dark vh-100 pt-2" style="width:20%">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none ps-2"><span class="fs-4">Dispensario Medico</span> </a> <hr> <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a class="nav-link @isActive("Home")" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#home"></use></svg>
-                        Home
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link @isActive("Pacientes")" asp-area="" asp-controller="Pacientes" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Pacientes"></use></svg>
-                        Pacientes
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link @isActive("Medicos")" asp-area="" asp-controller="Medicos" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Medicos"></use></svg>
-                        Medicos
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link @isActive("Medicamentos")" asp-area="" asp-controller="Medicamentos" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Medicamentos"></use></svg>
-                        Medicamentos
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link @isActive("Tipo_Farmacos")" asp-area="" asp-controller="Tipo_Farmacos" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Tipo_Farmacos"></use></svg>
-                        Tipo de Farmacos
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link @isActive("Marcas")" asp-area="" asp-controller="Marcas" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Marcas"></use></svg>
-                        Marcas
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link @isActive("Ubicacion_Medicamentos")" asp-area="" asp-controller="Ubicacion_Medicamentos" asp-action="Index">
-                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true"><use xlink:href="#Ubicacion_Medicamentos"></use></svg>
-                        Ubicación Medicamentos
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-secondary bg-opacity-10 p-2 rounded-circle me-3">
-                            <span class="material-symbols-outlined text-secondary">person</span>
-                        </div>
-                        <strong>@User.Identity.Name</strong>
-                    </div>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" style="">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
 
+        <div id="sidebar" class="d-flex flex-column h-100">
+
+        <!-- Brand -->
+        <div class="d-flex align-items-center px-3 py-3 gap-2 flex-shrink-0" id="brandRow">
+            <button id="sidebarLogoBtn" class="p-0 border-0 bg-transparent" title="Expandir menú" style="line-height:0;display:none;">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="bi bi-hospital-fill text-white" style="font-size:1rem;"></i>
+                </div>
+            </button>
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;" id="brandIcon">
+                <i class="bi bi-hospital-fill text-white" style="font-size:1rem;"></i>
+            </div>
+            <div class="sidebar-text lh-sm">
+                <div class="text-white fw-bold" style="font-size:0.88rem;">Dispensario</div>
+                <div class="text-white-50" style="font-size:0.72rem;">Médico APEC</div>
+            </div>
+            <button id="sidebarToggle" class="ms-auto" title="Contraer menú">
+                <i class="bi bi-layout-sidebar-reverse" style="font-size:0.9rem;"></i>
+            </button>
+        </div>
+
+        <div class="mx-3 flex-shrink-0" style="height:1px;background:rgba(255,255,255,0.08);"></div>
+
+        <!-- Nav -->
+        <nav id="sidebarMenu" class="flex-grow-1 overflow-y-auto overflow-x-hidden px-2 py-2 sidebar-scroll">
+
+            <!-- Principal -->
+            <div class="sidebar-section-label">Principal</div>
+            <a class="sidebar-link @isActive("Home")" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-house-door sidebar-icon"></i>
+                <span class="sidebar-text">Inicio</span>
+            </a>
+            <a class="sidebar-link @isActive("Visitas")" asp-controller="Visitas" asp-action="Index">
+                <i class="bi bi-calendar-check sidebar-icon"></i>
+                <span class="sidebar-text">Consultas</span>
+            </a>
+            <a class="sidebar-link @isActive("Reportes")" asp-controller="Reportes" asp-action="Index">
+                <i class="bi bi-file-earmark-bar-graph sidebar-icon"></i>
+                <span class="sidebar-text">Reportes</span>
+            </a>
+
+            <!-- Personal -->
+            <div class="sidebar-section-label">Personal</div>
+            <a class="sidebar-link @isActive("Pacientes")" asp-controller="Pacientes" asp-action="Index">
+                <i class="bi bi-people sidebar-icon"></i>
+                <span class="sidebar-text">Pacientes</span>
+            </a>
+            <a class="sidebar-link @isActive("Medicos")" asp-controller="Medicos" asp-action="Index">
+                <i class="bi bi-person-badge sidebar-icon"></i>
+                <span class="sidebar-text">Médicos</span>
+            </a>
+
+            <!-- Inventario -->
+            <div class="sidebar-section-label">Inventario</div>
+            <a class="sidebar-link @isActive("Medicamentos")" asp-controller="Medicamentos" asp-action="Index">
+                <i class="bi bi-capsule sidebar-icon"></i>
+                <span class="sidebar-text">Medicamentos</span>
+            </a>
+            <a class="sidebar-link @isActive("Tipo_Farmacos")" asp-controller="Tipo_Farmacos" asp-action="Index">
+                <i class="bi bi-tags sidebar-icon"></i>
+                <span class="sidebar-text">Tipos de Fármacos</span>
+            </a>
+            <a class="sidebar-link @isActive("Marcas")" asp-controller="Marcas" asp-action="Index">
+                <i class="bi bi-bookmark-star sidebar-icon"></i>
+                <span class="sidebar-text">Marcas</span>
+            </a>
+            <a class="sidebar-link @isActive("Ubicacion_Medicamentos")" asp-controller="Ubicacion_Medicamentos" asp-action="Index">
+                <i class="bi bi-boxes sidebar-icon"></i>
+                <span class="sidebar-text">Ubicaciones</span>
+            </a>
+        </nav>
+
+        <div class="mx-3 flex-shrink-0" style="height:1px;background:rgba(255,255,255,0.08);"></div>
+
+        <!-- User -->
+        @{
+            var nombreMostrar = User.FindFirst("NombreCompleto")?.Value;
+            if (string.IsNullOrWhiteSpace(nombreMostrar)) nombreMostrar = User.Identity?.Name;
+            var rolUsuario = User.FindFirst("Rol")?.Value ?? "Usuario";
+        }
+        <div class="px-2 py-3 flex-shrink-0" id="userSection">
+            <div class="dropdown">
+                <button class="user-card w-100 border-0 text-start" id="userDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="user-avatar flex-shrink-0">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="sidebar-text lh-sm overflow-hidden" style="min-width:0;flex:1">
+                        <div class="text-white fw-semibold text-truncate" style="font-size:0.82rem;">@nombreMostrar</div>
+                        <div class="text-white-50" style="font-size:0.7rem;">@rolUsuario</div>
+                    </div>
+                    <i class="bi bi-chevron-up sidebar-text ms-auto" style="font-size:0.7rem;color:rgba(255,255,255,0.4);"></i>
+                </button>
+                <ul class="dropdown-menu shadow-lg mb-2" style="background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:12px;min-width:200px;padding:6px;">
+                    <li class="px-2 py-2 mb-1" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="user-avatar" style="width:28px;height:28px;font-size:0.8rem;"><i class="bi bi-person-fill"></i></div>
+                            <div>
+                                <div class="text-white fw-semibold" style="font-size:0.8rem;">@nombreMostrar</div>
+                                <div class="text-white-50" style="font-size:0.68rem;">@rolUsuario</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item rounded-2 d-flex align-items-center gap-2 py-2"
+                           href="@Url.Action("Index", "Perfil")#seguridad"
+                           style="color:rgba(255,255,255,0.75);font-size:0.83rem;">
+                            <i class="bi bi-gear" style="width:16px;"></i> Configuración
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item rounded-2 d-flex align-items-center gap-2 py-2"
+                           href="@Url.Action("Index", "Perfil")#perfil"
+                           style="color:rgba(255,255,255,0.75);font-size:0.83rem;">
+                            <i class="bi bi-person" style="width:16px;"></i> Perfil
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider my-1" style="border-color:rgba(255,255,255,0.1);"></li>
                     <li>
                         <form asp-controller="Auth" asp-action="Logout" method="post" class="m-0 p-0">
-                            <button type="submit" class="dropdown-item text-danger fw-bold">
-                                Sign out
+                            <button type="submit" class="dropdown-item rounded-2 d-flex align-items-center gap-2 py-2"
+                                    style="color:#f87171;font-size:0.83rem;font-weight:600;">
+                                <i class="bi bi-box-arrow-left" style="width:16px;"></i> Cerrar Sesión
                             </button>
                         </form>
                     </li>
-
                 </ul>
             </div>
         </div>
-        <div class="d-flex flex-column ps-3" style="width:85%; height: 100vh;overflow: auto;">
-            @RenderBody()
+    </div>
+
+
+        <div class="d-flex flex-column flex-grow-1 h-100 main-content bg-light">
+
+            <div class="p-4 overflow-auto h-100" style="background-color: #f8f9fa;">
+                @RenderBody()
+            </div>
         </div>
     </main>
 
-    @* <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Dispensario Medico Unapec - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/table-sort.js" asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn    = document.getElementById("sidebarToggle");
+            const logoBtn      = document.getElementById("sidebarLogoBtn");
+            const brandIcon    = document.getElementById("brandIcon");
+            const sidebar      = document.getElementById("sidebar");
+            const sidebarMenu  = document.getElementById("sidebarMenu");
+
+            function applySidebarState(collapsed) {
+                if (collapsed) {
+                    sidebar.classList.add("collapsed");
+                    // Show clickable logo icon, hide static brand icon
+                    logoBtn.style.display  = "flex";
+                    brandIcon.style.display = "none";
+                    sessionStorage.setItem("sidebarCollapsed", "1");
+                } else {
+                    sidebar.classList.remove("collapsed");
+                    logoBtn.style.display  = "none";
+                    brandIcon.style.display = "flex";
+                    sessionStorage.setItem("sidebarCollapsed", "0");
+                }
+            }
+
+            // Restore state from session
+            if (sessionStorage.getItem("sidebarCollapsed") === "1") {
+                applySidebarState(true);
+            }
+
+            toggleBtn.addEventListener("click", () => applySidebarState(!sidebar.classList.contains("collapsed")));
+            logoBtn.addEventListener("click",   () => applySidebarState(false));
+
+            // Scroll position
+            const savedScrollPosition = sessionStorage.getItem("sidebarScrollPos");
+            if (savedScrollPosition) sidebarMenu.scrollTop = parseInt(savedScrollPosition);
+            window.addEventListener("beforeunload", () => {
+                sessionStorage.setItem("sidebarScrollPos", sidebarMenu.scrollTop);
+            });
+
+            // Style dropdown items on hover
+            document.querySelectorAll('#userSection .dropdown-item').forEach(el => {
+                el.addEventListener('mouseenter', () => el.style.background = 'rgba(255,255,255,0.07)');
+                el.addEventListener('mouseleave', () => el.style.background = '');
+            });
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

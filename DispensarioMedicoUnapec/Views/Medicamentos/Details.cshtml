@@ -1,48 +1,189 @@
-﻿@model DispensarioMedicoUnapec.Models.Medicamento
+@model DispensarioMedicoUnapec.Models.Medicamento
+@using DispensarioMedicoUnapec.Models
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle del Medicamento";
+    var ubicaciones = ViewBag.Ubicaciones as List<Ubicacion_Medicamento> ?? new List<Ubicacion_Medicamento>();
+    string[] tramoLetras = { "A", "B", "C", "D", "E", "F" };
 }
 
-<h1>Details</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
 
-<div>
-    <h4>Medicamento</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dosis)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dosis)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tipo_Farmaco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tipo_Farmaco.Nombre)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+            <!-- ===== FICHA PRINCIPAL ===== -->
+            <div class="card shadow border-0 rounded-3 mb-4">
+                <div class="card-header bg-info text-white py-3 d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0"><i class="bi bi-capsule-pill me-2"></i>Ficha del Medicamento</h5>
+                    @if (Model.Estado != null && Model.Estado.Contains("Disponible"))
+                    {
+                        <span class="badge bg-light text-success border border-success border-opacity-50">
+                            <i class="bi bi-check-circle me-1"></i>Disponible
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-light text-danger border border-danger border-opacity-50">
+                            <i class="bi bi-x-circle me-1"></i>@Model.Estado
+                        </span>
+                    }
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-12 text-center mb-4">
+                            <div class="display-1 text-info opacity-50 mb-2">
+                                <i class="bi bi-capsule"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">@Model.Nombre</h3>
+                            <div class="d-flex justify-content-center gap-3 mt-2">
+                                <p class="text-muted mb-0"><i class="bi bi-tags-fill me-1"></i>Tipo: @(Model.Tipo_Farmaco != null ? Model.Tipo_Farmaco.Nombre : "—")</p>
+                                <p class="text-muted mb-0"><i class="bi bi-bookmark-fill me-1"></i>Marca: @(Model.Marca != null ? Model.Marca.Nombre : "—")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-secondary fw-bold border-bottom pb-2 mb-3">Especificaciones del Fármaco</h6>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <div class="p-3 bg-light rounded shadow-sm">
+                                <small class="text-muted d-block fw-semibold mb-1">Descripción</small>
+                                <span class="fs-6">@Model.Descripcion</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-light rounded shadow-sm">
+                                <small class="text-muted d-block fw-semibold mb-1">Dosis Prescrita</small>
+                                <span class="fs-6">@Model.Dosis</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-light rounded shadow-sm">
+                                <small class="text-muted d-block fw-semibold mb-1">Disponibilidad Actual</small>
+                                <span class="fs-6 fw-bold @(Model.Estado != null && Model.Estado.Contains("Disponible") ? "text-success" : "text-danger")">
+                                    @Model.Estado
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white p-3 border-top d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Regresar al listado</a>
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Ubicacion_Medicamentos" asp-action="Create"
+                           class="btn btn-outline-info">
+                            <i class="bi bi-geo-alt me-2"></i>Asignar Ubicación
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil-square me-2"></i>Editar Datos
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== UBICACIONES EN ESTANTE ===== -->
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+                    <h6 class="fw-bold mb-0">
+                        <i class="bi bi-boxes text-info me-2"></i>
+                        Ubicaciones de Almacenaje
+                        @if (ubicaciones.Any())
+                        {
+                            <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 rounded-pill px-2 ms-2">@ubicaciones.Count</span>
+                        }
+                    </h6>
+                    <a asp-controller="Ubicacion_Medicamentos" asp-action="Create"
+                       class="btn btn-sm btn-outline-info rounded-pill px-3">
+                        <i class="bi bi-plus-circle me-1"></i> Nueva Ubicación
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    @if (ubicaciones.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light text-secondary small">
+                                    <tr>
+                                        <th class="ps-4 py-3">Estante</th>
+                                        <th class="py-3">Nivel (Tramo)</th>
+                                        <th class="py-3">Celda</th>
+                                        <th class="py-3">Posición</th>
+                                        <th class="py-3">Estado</th>
+                                        <th class="py-3 text-center">Gestionar</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="border-top-0">
+                                    @foreach (var ub in ubicaciones)
+                                    {
+                                        var tramoIdx = (int)ub.Tramo;
+                                        var tramoLetra = tramoIdx >= 0 && tramoIdx < tramoLetras.Length ? tramoLetras[tramoIdx] : ub.Tramo.ToString();
+                                        <tr>
+                                            <td class="ps-4 fw-semibold text-dark">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="bg-info bg-opacity-10 rounded d-flex align-items-center justify-content-center" style="width:32px;height:32px">
+                                                        <i class="bi bi-box-seam text-info small"></i>
+                                                    </div>
+                                                    @(ub.Estante != null ? ub.Estante.Nombre : "—")
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3">
+                                                    Nivel @tramoLetra
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border rounded-pill px-2">
+                                                    Celda @ub.Celda
+                                                </span>
+                                            </td>
+                                            <td class="fw-semibold text-info">
+                                                <i class="bi bi-geo-alt-fill me-1"></i>@tramoLetra@ub.Celda
+                                            </td>
+                                            <td>
+                                                @if (ub.EstadoMedicamento.ToString() == "A")
+                                                {
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3">
+                                                        <i class="bi bi-check-circle me-1"></i>Activo
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3">
+                                                        <i class="bi bi-x-circle me-1"></i>Inactivo
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                <a asp-controller="Ubicacion_Medicamentos" asp-action="Edit" asp-route-id="@ub.Id"
+                                                   class="btn btn-sm btn-outline-warning rounded-pill px-2" title="Editar ubicación">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a asp-controller="Ubicacion_Medicamentos" asp-action="Delete" asp-route-id="@ub.Id"
+                                                   class="btn btn-sm btn-outline-danger rounded-pill px-2 ms-1" title="Eliminar ubicación">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-box-seam fs-1 d-block mb-3 opacity-40 text-secondary"></i>
+                            <span class="fs-6">Este medicamento no tiene una ubicación de almacenaje registrada.</span>
+                            <div class="mt-3">
+                                <a asp-controller="Ubicacion_Medicamentos" asp-action="Create"
+                                   class="btn btn-sm btn-outline-info rounded-pill px-4">
+                                    <i class="bi bi-plus-circle me-1"></i> Asignar Ahora
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

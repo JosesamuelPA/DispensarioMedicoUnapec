@@ -1,33 +1,39 @@
-﻿@model DispensarioMedicoUnapec.Models.Tipo_Farmaco
+@model DispensarioMedicoUnapec.Models.Tipo_Farmaco
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Tipo de Fármaco";
 }
 
-<h1>Delete</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="alert alert-danger d-flex align-items-center shadow-sm mb-4 border-0" role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-2 me-3"></i>
+                <div>
+                    <h5 class="alert-heading mb-1 fw-bold">¡Cuidado!</h5>
+                    <div class="mb-0">¿Seguro que deseas eliminar esta categoría? Cualquier medicamento asociado podría experimentar errores si pierde su referencia.</div>
+                </div>
+            </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Tipo_Farmaco</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EstadoFarmaco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EstadoFarmaco)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+            <div class="card shadow border-danger border-opacity-50 rounded-3">
+                <div class="card-body p-4 text-center">
+                    <div class="display-3 text-danger opacity-50 mb-3 mt-2">
+                        <i class="bi bi-tags"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-4">@Model.Nombre</h2>
+                    <p class="text-secondary fw-semibold">Estado actual: @Model.EstadoFarmaco</p>
+                </div>
+                <div class="card-footer bg-light p-3 border-top-0 d-flex justify-content-between align-items-center">
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Cancelar</a>
+                    
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="bi bi-trash-fill me-2"></i>Eliminar Categoría
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

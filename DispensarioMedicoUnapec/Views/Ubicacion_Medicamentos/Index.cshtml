@@ -1,51 +1,98 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Ubicacion_Medicamento>
+@model IEnumerable<DispensarioMedicoUnapec.Models.Ubicacion_Medicamento>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Ubicación Medicamentos</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+            <i class="bi bi-geo-alt-fill me-2"></i>Ubicaciones de Medicamentos
+        </h1>
+        <p class="text-muted mt-1 mb-0">Control de almacenamiento y estantes</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Ubicación
+        </a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Agregar nueva ubicación</a>
-</p>
-<table class="table table-bordered table-hover text-center">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Estante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tramo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Celda)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EstadoMedicamento)
-            </th>
-            <th>Gestionar</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estante)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tramo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Celda)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EstadoMedicamento)
-                </td>
-                <partial name="_MenuOptions" model="item.Id" />
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input name="filter_estante" class="form-control" placeholder="Buscar por Estante..." />
+                </div>
+                <div class="col-md-3">
+                    <select name="filter_tramo" class="form-select">
+                        <option>Todos</option>
+                        @foreach (var tramo in Enum.GetValues<DispensarioMedicoUnapec.Models.TramoEstante>())
+                        {
+                            <option>@tramo</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="filter_estado" class="form-select">
+                        <option>Todos</option>
+                        @foreach (var estado in Enum.GetValues<DispensarioMedicoUnapec.Models.EstadoMedicamento>())
+                        {
+                            <option>@estado</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100" title="Buscar"><i class="bi bi-search"></i></button>
+                    <button type="button" id="btnLimpiar" class="btn btn-secondary w-100" title="Limpiar"><i class="bi bi-eraser"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-            </tr>
+<div id="table-container">
+    <partial name="_UbicacionesTable" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Ubicacion_Medicamentos")',
+                    type: 'GET',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#table-container').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al filtrar: ", error);
+                    }
+                });
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#filterForm')[0].reset();
+                $('#filterForm').submit();
+            });
+        });
+
+        function loadPage(page) {
+            var data = $('#filterForm').serialize() + '&page=' + page;
+            $.ajax({
+                url: '@Url.Action("Filter", "Ubicacion_Medicamentos")',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#table-container').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en paginación: ", error);
+                }
+            });
         }
-    </tbody>
-</table>
+    </script>
+}

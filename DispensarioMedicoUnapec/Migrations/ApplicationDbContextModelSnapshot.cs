@@ -22,6 +22,28 @@ namespace DispensarioMedicoUnapec.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DispensarioMedicoUnapec.Models.Estante", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Estantes");
+                });
+
             modelBuilder.Entity("DispensarioMedicoUnapec.Models.Marca", b =>
                 {
                     b.Property<int>("Id")
@@ -71,6 +93,9 @@ namespace DispensarioMedicoUnapec.Migrations
                     b.Property<int>("Id_Tipo_Farmaco")
                         .HasColumnType("int");
 
+                    b.Property<int>("MarcaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -79,6 +104,8 @@ namespace DispensarioMedicoUnapec.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Id_Tipo_Farmaco");
+
+                    b.HasIndex("MarcaId");
 
                     b.ToTable("Medicamentos");
                 });
@@ -208,15 +235,20 @@ namespace DispensarioMedicoUnapec.Migrations
                     b.Property<int>("EstadoMedicamento")
                         .HasColumnType("int");
 
-                    b.Property<string>("Estante")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<int>("EstanteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MedicamentoId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Tramo")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EstanteId");
+
+                    b.HasIndex("MedicamentoId");
 
                     b.ToTable("Ubicacion_Medicamentos");
                 });
@@ -229,6 +261,18 @@ namespace DispensarioMedicoUnapec.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Cargo")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NombreCompleto")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -236,6 +280,10 @@ namespace DispensarioMedicoUnapec.Migrations
                     b.Property<string>("Rol")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -258,19 +306,24 @@ namespace DispensarioMedicoUnapec.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Medico")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("MedicoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Motivo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Paciente")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PacienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("temp")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MedicoId");
+
+                    b.HasIndex("PacienteId");
 
                     b.ToTable("Visitas");
                 });
@@ -283,7 +336,53 @@ namespace DispensarioMedicoUnapec.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DispensarioMedicoUnapec.Models.Marca", "Marca")
+                        .WithMany()
+                        .HasForeignKey("MarcaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Marca");
+
                     b.Navigation("Tipo_Farmaco");
+                });
+
+            modelBuilder.Entity("DispensarioMedicoUnapec.Models.Ubicacion_Medicamento", b =>
+                {
+                    b.HasOne("DispensarioMedicoUnapec.Models.Estante", "Estante")
+                        .WithMany()
+                        .HasForeignKey("EstanteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DispensarioMedicoUnapec.Models.Medicamento", "Medicamento")
+                        .WithMany()
+                        .HasForeignKey("MedicamentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estante");
+
+                    b.Navigation("Medicamento");
+                });
+
+            modelBuilder.Entity("DispensarioMedicoUnapec.Models.Visita", b =>
+                {
+                    b.HasOne("DispensarioMedicoUnapec.Models.Medico", "Medico")
+                        .WithMany()
+                        .HasForeignKey("MedicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DispensarioMedicoUnapec.Models.Paciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medico");
+
+                    b.Navigation("Paciente");
                 });
 #pragma warning restore 612, 618
         }

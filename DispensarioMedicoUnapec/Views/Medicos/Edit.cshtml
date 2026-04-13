@@ -1,67 +1,87 @@
-﻿@model DispensarioMedicoUnapec.Models.Medico
+@model DispensarioMedicoUnapec.Models.Medico
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Médico";
 }
 
-<h1>Edit</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-warning py-3">
+                    <h5 class="mb-0 text-dark fw-bold"><i class="bi bi-pencil-square me-2"></i>Editar Perfil del Médico</h5>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
 
-<h4>Medico</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                        <div class="row g-4">
+                            <!-- Columna Izquierda -->
+                            <div class="col-md-6">
+                                <h6 class="text-muted border-bottom pb-2 mb-3">Información Personal</h6>
+                                
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nombre" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Nombre" class="form-control" />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Apellido" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Apellido" class="form-control" />
+                                    <span asp-validation-for="Apellido" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="FechaNacimiento" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                                    <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Cedula" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Cedula" class="form-control" />
+                                    <span asp-validation-for="Cedula" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Columna Derecha -->
+                            <div class="col-md-6">
+                                <h6 class="text-muted border-bottom pb-2 mb-3">Información Profesional</h6>
+                                
+                                <div class="form-group mb-3">
+                                    <label asp-for="Especialidad" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Especialidad" class="form-control" />
+                                    <span asp-validation-for="Especialidad" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="NumeroCarnet" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="NumeroCarnet" class="form-control" />
+                                    <span asp-validation-for="NumeroCarnet" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="TandaLaboral" class="form-label text-secondary fw-semibold"></label>
+                                    <select asp-for="TandaLaboral" class="form-select" asp-items="Html.GetEnumSelectList<DispensarioMedicoUnapec.Models.TandaLaboral>()"></select>
+                                    <span asp-validation-for="TandaLaboral" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label asp-for="EstadoMedico" class="form-label text-secondary fw-semibold"></label>
+                                    <select asp-for="EstadoMedico" class="form-select">
+                                        <option value="0">Activo</option>
+                                        <option value="1">Inactivo</option>
+                                    </select>
+                                    <span asp-validation-for="EstadoMedico" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light border px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-warning px-4 fw-semibold"><i class="bi bi-save me-2"></i>Actualizar Médico</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control" />
-                <span asp-validation-for="Apellido" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaNacimiento" class="control-label"></label>
-                <input asp-for="FechaNacimiento" class="form-control" />
-                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cedula" class="control-label"></label>
-                <input asp-for="Cedula" class="form-control" />
-                <span asp-validation-for="Cedula" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NumeroCarnet" class="control-label"></label>
-                <input asp-for="NumeroCarnet" class="form-control" />
-                <span asp-validation-for="NumeroCarnet" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TandaLaboral" class="control-label"></label>
-                <select asp-for="TandaLaboral" class="form-control"></select>
-                <span asp-validation-for="TandaLaboral" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Especialidad" class="control-label"></label>
-                <input asp-for="Especialidad" class="form-control" />
-                <span asp-validation-for="Especialidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EstadoMedico" class="control-label"></label>
-                <select asp-for="EstadoMedico" class="form-control"></select>
-                <span asp-validation-for="EstadoMedico" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

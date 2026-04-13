@@ -1,75 +1,90 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Medico>
+@model IEnumerable<DispensarioMedicoUnapec.Models.Medico>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Médicos</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+            <i class="bi bi-person-badge-fill me-2"></i>Gestión de Médicos
+        </h1>
+        <p class="text-muted mt-1 mb-0">Directorio del personal médico y especialistas</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Médico
+        </a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Agregar nuevo Médico</a>
-</p>
-<table class="table table-bordered table-hover text-center">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Apellido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaNacimiento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cedula)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumeroCarnet)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TandaLaboral)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Especialidad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EstadoMedico)
-            </th>
-            <th>Gestionar</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellido)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaNacimiento)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cedula)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumeroCarnet)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TandaLaboral)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Especialidad)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EstadoMedico)
-                </td>
-                <partial name="_MenuOptions" model="item.Id" />
+<div class="card mb-4">
+    <div class="card-body py-3">
+        <form id="filterForm">
+            <div class="d-flex gap-2 align-items-center flex-nowrap">
+                <input name="filter_name"         class="form-control form-control-sm" style="min-width:0;flex:1.5" placeholder="Nombre..." />
+                <input name="filter_cedula"       class="form-control form-control-sm" style="min-width:0;flex:1" placeholder="Cédula..." />
+                <input name="filter_especialidad" class="form-control form-control-sm" style="min-width:0;flex:1.5" placeholder="Especialidad..." />
+                <select name="filter_tanda"  class="form-select form-select-sm" style="min-width:0;flex:1">
+                    <option value="">Tanda</option>
+                    @foreach (var tanda in Enum.GetValues<DispensarioMedicoUnapec.Models.TandaLaboral>())
+                    {
+                        <option>@tanda</option>
+                    }
+                </select>
+                <select name="filter_status" class="form-select form-select-sm" style="min-width:0;flex:1">
+                    <option value="">Estado</option>
+                    <option value="A">Activo</option>
+                    <option value="I">Inactivo</option>
+                </select>
+                <button type="submit"      class="btn btn-sm btn-success px-3 flex-shrink-0"          title="Buscar"><i class="bi bi-search"></i></button>
+                <button type="button" id="btnLimpiar" class="btn btn-sm btn-secondary px-3 flex-shrink-0" title="Limpiar"><i class="bi bi-eraser"></i></button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            </tr>
+<div id="table-container">
+    <partial name="_MedicosTable" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Medicos")',
+                    type: 'GET',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#table-container').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al filtrar: ", error);
+                    }
+                });
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#filterForm')[0].reset();
+                $('#filterForm').submit();
+            });
+        });
+
+        function loadPage(page) {
+            var data = $('#filterForm').serialize() + '&page=' + page;
+            $.ajax({
+                url: '@Url.Action("Filter", "Medicos")',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#table-container').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en paginación: ", error);
+                }
+            });
         }
-    </tbody>
-</table>
+    </script>
+}

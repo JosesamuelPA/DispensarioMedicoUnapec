@@ -1,74 +1,104 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Paciente>
+@model IEnumerable<DispensarioMedicoUnapec.Models.Paciente>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Pacientes</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+            <i class="bi bi-people-fill me-2"></i>Gestión de Pacientes
+        </h1>
+        <p class="text-muted mt-1 mb-0">Directorio y control de pacientes registrados en el sistema</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Paciente
+        </a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Agregar nuevo paciente</a>
-</p>
-<table class="table table-bordered table-hover text-center">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Apellido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaNacimiento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cedula)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Numero_Carnet)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tipo_Paciente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado_Paciente)
-            </th>
-            <th>Gestionar</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Apellido)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaNacimiento)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cedula)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Telefono)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Numero_Carnet)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tipo_Paciente)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estado_Paciente)
-                </td>
-                <partial name="_MenuOptions" model="item.Id" />
-            </tr>
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <input name="filter_name" class="form-control" placeholder="Nombre" />
+                </div>
+                <div class="col-md-2">
+                    <input name="filter_lastName" class="form-control" placeholder="Apellido" />
+                </div>
+                <div class="col-md-2">
+                    <input name="filter_id" class="form-control" placeholder="Cedula" />
+                </div>
+                <div class="col-md-2">
+                    <select name="filter_typePatients" class="form-select">
+                        <option>Todos</option>
+                        @foreach (var tipoPacientes in Enum.GetValues<TipoPaciente>())
+                        {
+                            <option>@tipoPacientes</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="filter_statusPatients" name="filter_statusPatients" class="form-select">
+                        <option>Todos</option>
+                        @foreach (var estadoPaciente in Enum.GetValues<EstadoPaciente>())
+                        {
+                            <option>@estadoPaciente</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100" title="Buscar"><i class="bi bi-search"></i></button>
+                    <button type="button" id="btnLimpiar" class="btn btn-secondary w-100" title="Limpiar"><i class="bi bi-eraser"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="table-container">
+    <partial name="_PacientesTable" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Pacientes")',
+                    type: 'GET',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#table-container').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al filtrar: ", error);
+                    }
+                });
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#filterForm')[0].reset();
+                $('#filterForm').submit();
+            });
+        });
+
+        function loadPage(page) {
+            var data = $('#filterForm').serialize() + '&page=' + page;
+            $.ajax({
+                url: '@Url.Action("Filter", "Pacientes")',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#table-container').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en paginación: ", error);
+                }
+            });
         }
-    </tbody>
-</table>
+    </script>
+}

@@ -1,52 +1,74 @@
-﻿@model DispensarioMedicoUnapec.Models.Medicamento
+@model DispensarioMedicoUnapec.Models.Medicamento
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Medicamento";
 }
 
-<h1>Edit</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-warning py-3">
+                    <h5 class="mb-0 text-dark fw-bold"><i class="bi bi-pencil-square me-2"></i>Editar Ficha del Medicamento</h5>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
 
-<h4>Medicamento</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nombre" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Nombre" class="form-control" />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Descripcion" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Descripcion" class="form-control" />
+                                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Dosis" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Dosis" class="form-control" />
+                                    <span asp-validation-for="Dosis" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label asp-for="Id_Tipo_Farmaco" class="form-label text-secondary fw-semibold">Tipo de Fármaco</label>
+                                    <select asp-for="Id_Tipo_Farmaco" class="form-select" asp-items="ViewBag.Id_Tipo_Farmaco"></select>
+                                    <span asp-validation-for="Id_Tipo_Farmaco" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label asp-for="MarcaId" class="form-label text-secondary fw-semibold">Marca / Laboratorio</label>
+                                    <select asp-for="MarcaId" class="form-select" asp-items="ViewBag.MarcaId"></select>
+                                    <span asp-validation-for="MarcaId" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-4">
+                                    <label asp-for="Estado" class="form-label text-secondary fw-semibold"></label>
+                                    <select asp-for="Estado" class="form-select">
+                                        <option value="Disponible">Disponible</option>
+                                        <option value="No disponible">No disponible</option>
+                                    </select>
+                                    <span asp-validation-for="Estado" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light border px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-warning px-4 fw-semibold"><i class="bi bi-save me-2"></i>Actualizar Medicamento</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
-                <span asp-validation-for="Descripcion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Dosis" class="control-label"></label>
-                <input asp-for="Dosis" class="form-control" />
-                <span asp-validation-for="Dosis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Id_Tipo_Farmaco" class="control-label"></label>
-                <select asp-for="Id_Tipo_Farmaco" class="form-control" asp-items="ViewBag.Id_Tipo_Farmaco"></select>
-                <span asp-validation-for="Id_Tipo_Farmaco" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +22,15 @@ namespace DispensarioMedicoUnapec.Controllers
         }
 
         // GET: Pacientes
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pacientes.ToListAsync());
+            int pageSize = 10;
+            int totalItems = await _context.Pacientes.CountAsync();
+            ViewBag.CurrentPage = 1;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            
+            return View(await _context.Pacientes.Take(pageSize).ToListAsync());
         }
 
         // GET: Pacientes/Details/5
@@ -42,6 +48,15 @@ namespace DispensarioMedicoUnapec.Controllers
                 return NotFound();
             }
 
+            // Load all visits for this patient, including the attending doctor
+            var visitas = await _context.Visitas
+                .Include(v => v.Medico)
+                .Where(v => v.PacienteId == id)
+                .OrderByDescending(v => v.Fecha)
+                .ToListAsync();
+
+            ViewBag.Visitas = visitas;
+
             return View(paciente);
         }
 
@@ -49,6 +64,47 @@ namespace DispensarioMedicoUnapec.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+        // GET: Pacientes/Filter
+        public async Task<IActionResult> Filter(string filter_name, string filter_lastName, string filter_id, string filter_typePatients, string filter_statusPatients, int page = 1)
+        {
+            int pageSize = 10;
+            var pacientes = _context.Pacientes.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter_name))
+            {
+                pacientes = pacientes.Where(p => p.Nombre.Contains(filter_name));
+            }
+            if (!string.IsNullOrEmpty(filter_lastName))
+            {
+                pacientes = pacientes.Where(p => p.Apellido.Contains(filter_lastName));
+            }
+            if (!string.IsNullOrEmpty(filter_id))
+            {
+                pacientes = pacientes.Where(p => p.Cedula.Contains(filter_id));
+            }
+            if (!string.IsNullOrEmpty(filter_typePatients) && filter_typePatients != "Todos")
+            {
+                if (Enum.TryParse<TipoPaciente>(filter_typePatients, out var tipo))
+                {
+                    pacientes = pacientes.Where(p => p.Tipo_Paciente == tipo);
+                }
+            }
+            if (!string.IsNullOrEmpty(filter_statusPatients) && filter_statusPatients != "Todos")
+            {
+                if (Enum.TryParse<EstadoPaciente>(filter_statusPatients, out var estado))
+                {
+                    pacientes = pacientes.Where(p => p.Estado_Paciente == estado);
+                }
+            }
+
+            int totalItems = await pacientes.CountAsync();
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var pagedResults = await pacientes.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return PartialView("_PacientesTable", pagedResults);
         }
 
         // POST: Pacientes/Create

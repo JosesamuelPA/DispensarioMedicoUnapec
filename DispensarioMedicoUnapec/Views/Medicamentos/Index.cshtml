@@ -1,57 +1,99 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Medicamento>
+@model IEnumerable<DispensarioMedicoUnapec.Models.Medicamento>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Medicamentos</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+            <i class="bi bi-capsule-pill me-2"></i>Gestión de Medicamentos
+        </h1>
+        <p class="text-muted mt-1 mb-0">Catálogo e inventario de productos farmacéuticos</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Medicamento
+        </a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Crear nuevo Medicamento</a>
-</p>
-<table class="table table-bordered table-hover text-center">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Dosis)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tipo_Farmaco)
-            </th>
-            <th>Gestionar</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descripcion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Estado)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Dosis)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tipo_Farmaco.Nombre)
-                </td>
-                <partial name="_MenuOptions" model="item.Id" />
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input name="filter_name" class="form-control" placeholder="Buscar por Nombre o Descripción..." />
+                </div>
+                <div class="col-md-3">
+                    <select name="filter_tipo" class="form-select">
+                        <option value="">Todos los Tipos</option>
+                        @if (ViewBag.TiposFarmaco != null)
+                        {
+                            foreach (var tipo in ViewBag.TiposFarmaco as IEnumerable<DispensarioMedicoUnapec.Models.Tipo_Farmaco>)
+                            {
+                                <option value="@tipo.Id">@tipo.Nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="filter_estado" class="form-select">
+                        <option>Todos</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100" title="Buscar"><i class="bi bi-search"></i></button>
+                    <button type="button" id="btnLimpiar" class="btn btn-secondary w-100" title="Limpiar"><i class="bi bi-eraser"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-            </tr>
+<div id="table-container">
+    <partial name="_MedicamentosTable" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Medicamentos")',
+                    type: 'GET',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#table-container').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al filtrar: ", error);
+                    }
+                });
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#filterForm')[0].reset();
+                $('#filterForm').submit();
+            });
+        });
+
+        function loadPage(page) {
+            var data = $('#filterForm').serialize() + '&page=' + page;
+            $.ajax({
+                url: '@Url.Action("Filter", "Medicamentos")',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#table-container').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en paginación: ", error);
+                }
+            });
         }
-    </tbody>
-</table>
+    </script>
+}

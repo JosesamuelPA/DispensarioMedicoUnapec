@@ -1,0 +1,225 @@
+@* _PaisSelector.cshtml
+   Parámetros via ViewData:
+     - "FieldName"  : nombre del campo del modelo (ej. "Pais") — requerido
+     - "FieldId"    : id HTML único para el widget (ej. "Pais") — requerido
+     - "FieldValue" : valor actual (para modo edición)
+     - "Required"   : bool — si se requiere el campo
+*@
+@{
+    var fieldName  = ViewData["FieldName"]  as string ?? "Pais";
+    var fieldId    = ViewData["FieldId"]    as string ?? "Pais";
+    var fieldValue = ViewData["FieldValue"] as string ?? "";
+    var required   = ViewData["Required"] is bool b && b;
+    var widgetId   = $"pais_widget_{fieldId}";
+}
+
+<style>
+    .country-selector { position: relative; }
+    .country-selector .cs-input-wrap { position: relative; }
+    .country-selector .cs-flag {
+        position: absolute; left: 10px; top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.15rem; line-height: 1; pointer-events: none;
+    }
+    .country-selector .cs-input {
+        padding-left: 38px !important;
+        cursor: pointer;
+    }
+    .country-selector .cs-clear {
+        position: absolute; right: 10px; top: 50%;
+        transform: translateY(-50%);
+        background: none; border: none; color: #9ca3af;
+        cursor: pointer; display: none; line-height: 1;
+    }
+    .country-selector .cs-clear:hover { color: #ef4444; }
+    .cs-dropdown {
+        position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+        background: #fff; border: 1px solid #dee2e6; border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+        max-height: 220px; overflow-y: auto; z-index: 1050; display: none;
+    }
+    .cs-dropdown.open { display: block; }
+    .cs-item {
+        padding: 8px 14px; cursor: pointer; display: flex;
+        align-items: center; gap: 10px; font-size: 0.875rem;
+        border-radius: 6px; margin: 2px 4px;
+        transition: background 0.12s;
+    }
+    .cs-item:hover, .cs-item.highlighted { background: rgba(59,130,246,0.10); }
+    .cs-item .cs-item-flag { font-size: 1.1rem; flex-shrink: 0; }
+    .cs-item .cs-item-name { flex: 1; }
+    .cs-item .cs-item-code { color: #9ca3af; font-size: 0.72rem; }
+    .cs-empty { padding: 12px 14px; color: #9ca3af; font-size: 0.85rem; text-align: center; }
+    .cs-loading { padding: 12px; text-align: center; color: #9ca3af; font-size: 0.85rem; }
+    .cs-dropdown::-webkit-scrollbar { width: 4px; }
+    .cs-dropdown::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+</style>
+
+<div class="country-selector" id="@widgetId">
+    <!-- Hidden real input bound to model -->
+    <input type="hidden" name="@fieldName" id="@(fieldId)_hidden" value="@fieldValue" />
+
+    <div class="cs-input-wrap">
+        <span class="cs-flag" id="@(fieldId)_flag">🌐</span>
+        <input type="text"
+               id="@(fieldId)_search"
+               class="form-control cs-input"
+               placeholder="Escribe para buscar un país..."
+               autocomplete="off"
+               value="@fieldValue"
+               @(required ? "required" : "") />
+        <button type="button" class="cs-clear" id="@(fieldId)_clear" title="Limpiar">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div class="cs-dropdown" id="@(fieldId)_dropdown">
+        <div class="cs-loading"><i class="bi bi-arrow-repeat me-1"></i>Cargando países...</div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const WIDGET_ID  = '@widgetId';
+    const FIELD_ID   = '@fieldId';
+    const INIT_VALUE = '@Html.Raw(fieldValue.Replace("'", "\\'"))';
+
+    const searchInput = document.getElementById(`${FIELD_ID}_search`);
+    const hiddenInput = document.getElementById(`${FIELD_ID}_hidden`);
+    const dropdown    = document.getElementById(`${FIELD_ID}_dropdown`);
+    const flagSpan    = document.getElementById(`${FIELD_ID}_flag`);
+    const clearBtn    = document.getElementById(`${FIELD_ID}_clear`);
+
+    let allCountries = [];
+    let highlighted  = -1;
+
+    // ── Fetch countries from REST Countries API ──────────────────────────
+    async function loadCountries() {
+        try {
+            const res  = await fetch('https://restcountries.com/v3.1/all?fields=name,flag,cca2,translations');
+            const data = await res.json();
+            allCountries = data
+                .map(c => ({
+                    name : c.translations?.spa?.common ?? c.name.common,
+                    flag : c.flag ?? '🏴',
+                    code : c.cca2,
+                }))
+                .sort((a, b) => a.name.localeCompare(b.name, 'es'));
+
+            // If there's an initial value already, set its flag
+            if (INIT_VALUE) {
+                const match = allCountries.find(c => c.name.toLowerCase() === INIT_VALUE.toLowerCase());
+                if (match) flagSpan.textContent = match.flag;
+            }
+        } catch {
+            allCountries = [];
+        }
+    }
+
+    // ── Render dropdown ──────────────────────────────────────────────────
+    function renderList(query) {
+        const q = query.trim().toLowerCase();
+        const filtered = q
+            ? allCountries.filter(c => c.name.toLowerCase().includes(q))
+            : allCountries;
+
+        if (!allCountries.length) {
+            dropdown.innerHTML = '<div class="cs-loading"><i class="bi bi-arrow-repeat me-1"></i>Cargando...</div>';
+            return;
+        }
+
+        if (!filtered.length) {
+            dropdown.innerHTML = '<div class="cs-empty">No se encontró ningún país.</div>';
+            highlighted = -1;
+            return;
+        }
+
+        dropdown.innerHTML = filtered.slice(0, 120).map((c, i) =>
+            `<div class="cs-item" data-name="${c.name}" data-flag="${c.flag}" data-idx="${i}">
+                <span class="cs-item-flag">${c.flag}</span>
+                <span class="cs-item-name">${c.name}</span>
+                <span class="cs-item-code">${c.code}</span>
+             </div>`
+        ).join('');
+
+        highlighted = -1;
+        dropdown.querySelectorAll('.cs-item').forEach(el => {
+            el.addEventListener('click', () => selectCountry(el.dataset.name, el.dataset.flag));
+            el.addEventListener('mouseenter', () => setHighlight(parseInt(el.dataset.idx)));
+        });
+    }
+
+    function setHighlight(idx) {
+        dropdown.querySelectorAll('.cs-item').forEach((el, i) => {
+            el.classList.toggle('highlighted', i === idx);
+        });
+        highlighted = idx;
+    }
+
+    function selectCountry(name, flag) {
+        searchInput.value = name;
+        hiddenInput.value = name;
+        flagSpan.textContent = flag;
+        clearBtn.style.display = 'block';
+        closeDropdown();
+    }
+
+    function openDropdown() {
+        renderList(searchInput.value);
+        dropdown.classList.add('open');
+    }
+
+    function closeDropdown() {
+        dropdown.classList.remove('open');
+    }
+
+    // ── Events ───────────────────────────────────────────────────────────
+    searchInput.addEventListener('focus', () => {
+        if (allCountries.length === 0) loadCountries().then(() => openDropdown());
+        else openDropdown();
+    });
+
+    searchInput.addEventListener('input', () => {
+        hiddenInput.value = searchInput.value; // allow free-text fallback
+        clearBtn.style.display = searchInput.value ? 'block' : 'none';
+        renderList(searchInput.value);
+        dropdown.classList.add('open');
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.cs-item');
+        if (!items.length) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setHighlight(Math.min(highlighted + 1, items.length - 1));
+            items[highlighted]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setHighlight(Math.max(highlighted - 1, 0));
+            items[highlighted]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'Enter' && highlighted >= 0) {
+            e.preventDefault();
+            const el = items[highlighted];
+            if (el) selectCountry(el.dataset.name, el.dataset.flag);
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        hiddenInput.value = '';
+        flagSpan.textContent = '🌐';
+        clearBtn.style.display = 'none';
+        searchInput.focus();
+        openDropdown();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!document.getElementById(WIDGET_ID).contains(e.target)) closeDropdown();
+    });
+
+    // Preload in background so first click is instant
+    loadCountries();
+})();
+</script>

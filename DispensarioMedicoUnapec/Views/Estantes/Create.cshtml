@@ -1,0 +1,57 @@
+@model DispensarioMedicoUnapec.Models.Estante
+
+@{
+    ViewData["Title"] = "Crear Nuevo Estante";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-box-seam me-2"></i>Crear Nuevo Estante o Mueble</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-secondary small mb-4">Ingrese los datos básicos del nuevo estante. Esto permitirá que esté disponible para asignarle medicamentos en la cuadrícula general.</p>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Nombre" class="form-label text-secondary fw-semibold"></label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej. Estante Central 01" />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="Descripcion" class="form-label text-secondary fw-semibold"></label>
+                            <textarea asp-for="Descripcion" class="form-control" rows="3" placeholder="Opcional. Detalles adicionales..."></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            @if (!string.IsNullOrEmpty(ViewBag.ReturnUrl))
+                            {
+                                <a href="@ViewBag.ReturnUrl" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Ubicacion_Medicamentos" asp-action="Index" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                                </a>
+                            }
+                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
+                                <i class="bi bi-plus-circle me-1"></i> Crear Estante
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

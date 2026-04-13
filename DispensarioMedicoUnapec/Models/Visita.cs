@@ -8,7 +8,7 @@ namespace DispensarioMedicoUnapec.Models
 
         [Key]
         public int Id { get; set; }
-        
+        public int temp { get; set; }
         [Required]
         [Display(Name = "Paciente")]
         public int PacienteId { get; set; } // Esta es la Clave Foránea (FK)

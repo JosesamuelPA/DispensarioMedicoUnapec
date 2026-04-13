@@ -1,49 +1,249 @@
-﻿@model DispensarioMedicoUnapec.Models.Ubicacion_Medicamento
+@model DispensarioMedicoUnapec.Models.Ubicacion_Medicamento
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Ubicación";
 }
 
-<h1>Edit</h1>
+<style>
+    .grid-estante {
+        display: grid;
+        grid-template-columns: 40px repeat(10, 1fr);
+        gap: 6px;
+        margin-top: 12px;
+    }
+    .grid-cell {
+        aspect-ratio: 1;
+        background-color: #f8f9fa;
+        border: 2px solid #dee2e6;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+        color: #adb5bd;
+        position: relative;
+    }
+    .grid-cell:hover:not(.occupied) {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+        transform: scale(1.07);
+    }
+    .grid-cell.selected {
+        background-color: #ffc107;
+        border-color: #e0a800;
+        color: #343a40;
+        box-shadow: 0 4px 10px rgba(255,193,7,0.4);
+    }
+    .grid-cell.occupied {
+        background-color: #ffe0e3;
+        border-color: #f5c6cb;
+        color: #842029;
+        cursor: not-allowed;
+        font-size: 0.6rem;
+        text-align: center;
+        padding: 2px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .grid-cell.occupied::after {
+        content: '';
+        position: absolute;
+        top: 4px; right: 4px;
+        width: 6px; height: 6px;
+        background: #dc3545;
+        border-radius: 50%;
+    }
+    .grid-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: #495057;
+    }
+</style>
 
-<h4>Ubicacion_Medicamento</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Estante" class="control-label"></label>
-                <input asp-for="Estante" class="form-control" />
-                <span asp-validation-for="Estante" class="text-danger"></span>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2"></i>Modificar Almacenaje de Medicamento</h5>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Edit" id="mainForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-4 p-3 bg-light rounded-3 border">
+                            <h6 class="text-warning fw-bold mb-3"><i class="bi bi-1-square me-2"></i>Estante Asignado (Mueble Físico)</h6>
+                            <div class="row g-2 align-items-end">
+                                <div class="col">
+                                    <label asp-for="EstanteId" class="form-label text-secondary fw-semibold small"></label>
+                                    <select asp-for="EstanteId" id="EstanteSelect" class="form-select" asp-items="ViewBag.Estantes" onchange="onEstanteChange(this)">
+                                        <option value="">-- Elija un Estante --</option>
+                                    </select>
+                                    <span asp-validation-for="EstanteId" class="text-danger small"></span>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="/Estantes/Create?returnUrl=/Ubicacion_Medicamentos/Edit/@Model.Id" class="btn btn-outline-warning" title="Crear Nuevo Estante">
+                                        <i class="bi bi-plus-lg"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <fieldset id="mainFields">
+                            <div class="row g-4">
+                                <!-- Columna Izquierda -->
+                                <div class="col-md-5 border-end">
+                                    <h6 class="text-secondary mb-4 border-bottom pb-2"><i class="bi bi-2-square me-2 text-warning"></i>Datos del Medicamento</h6>
+                                    <div class="form-group mb-4">
+                                        <label asp-for="MedicamentoId" class="form-label text-secondary fw-semibold small"></label>
+                                        <select asp-for="MedicamentoId" class="form-select" asp-items="ViewBag.Medicamentos"></select>
+                                        <span asp-validation-for="MedicamentoId" class="text-danger small"></span>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label asp-for="EstadoMedicamento" class="form-label text-secondary fw-semibold small"></label>
+                                        <select asp-for="EstadoMedicamento" class="form-select">
+                                            <option value="0">Activo (Disponible)</option>
+                                            <option value="1">Inactivo (Reservado)</option>
+                                        </select>
+                                    </div>
+                                    <input asp-for="Tramo" type="hidden" id="TramoInput" />
+                                    <input asp-for="Celda"  type="hidden" id="CeldaInput"  />
+
+                                    <div id="seleccion-badge" class="mt-3">
+                                        <span class="badge bg-warning text-dark px-3 py-2 fs-6 shadow-sm">
+                                            <i class="bi bi-geo-alt me-1"></i>
+                                            <span id="seleccion-texto">Cargando ubicación actual...</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Columna Derecha: Mapa -->
+                                <div class="col-md-7 ps-4">
+                                    <h6 class="text-secondary mb-2 border-bottom pb-2"><i class="bi bi-3-square me-2 text-warning"></i>Mapa de Celdas del Estante</h6>
+                                    <div class="alert alert-warning border-0 shadow-sm py-2 px-3 small">
+                                        <i class="bi bi-info-circle me-1"></i> Haz clic en una celda libre para reubicar.
+                                        <span class="ms-3"><span class="badge bg-danger">■</span> Ocupado</span>
+                                        <span class="ms-2"><span class="badge bg-warning text-dark">■</span> Seleccionado</span>
+                                    </div>
+
+                                    <!-- Cuadrícula 10x6 -->
+                                    <div class="grid-estante" id="gridEstante">
+                                        <div class="grid-label"></div>
+                                        @for(int i = 1; i <= 10; i++){
+                                            <div class="grid-label small text-muted">@i</div>
+                                        }
+                                        @{string[] tramos = {"A","B","C","D","E","F"};}
+                                        @for(int t = 0; t < tramos.Length; t++){
+                                            <div class="grid-label text-secondary fw-bold">@tramos[t]</div>
+                                            @for(int c = 1; c <= 10; c++){
+                                                <div class="grid-cell"
+                                                     id="gc-@(t)-@(c)"
+                                                     data-tramo="@t"
+                                                     data-celda="@c"
+                                                     data-letra="@tramos[t]"
+                                                     onclick="seleccionarCelda(this)">
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <span asp-validation-for="Tramo" class="text-danger small mt-2 d-block"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light border px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-warning px-4"><i class="bi bi-save me-2"></i>Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Tramo" class="control-label"></label>
-                <select asp-for="Tramo" class="form-control"></select>
-                <span asp-validation-for="Tramo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Celda" class="control-label"></label>
-                <input asp-for="Celda" class="form-control" />
-                <span asp-validation-for="Celda" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EstadoMedicamento" class="control-label"></label>
-                <select asp-for="EstadoMedicamento" class="form-control"></select>
-                <span asp-validation-for="EstadoMedicamento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    // Pre-existing values from the server (to pre-select the current cell)
+    const CURRENT_TRAMO = @Model.Tramo;
+    const CURRENT_CELDA = @Model.Celda;
+    const CURRENT_ID    = @Model.Id;
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        const estanteId = document.getElementById('EstanteSelect').value;
+        if (estanteId) {
+            await loadOccupiedCells(estanteId);
+            // Pre-select the current cell (the existing assignment)
+            const currentCell = document.getElementById(`gc-${CURRENT_TRAMO}-${CURRENT_CELDA}`);
+            if (currentCell && !currentCell.classList.contains('occupied')) {
+                seleccionarCelda(currentCell, true);
+            }
+        }
+    });
+
+    async function onEstanteChange(sel) {
+        const estanteId = sel.value;
+        if (!estanteId) {
+            resetGrid();
+            return;
+        }
+        await loadOccupiedCells(estanteId);
+    }
+
+    async function loadOccupiedCells(estanteId) {
+        resetGrid();
+        const resp = await fetch(`/Ubicacion_Medicamentos/GetOccupiedCells?estanteId=${estanteId}&excludeId=${CURRENT_ID}`);
+        const occupied = await resp.json();
+        occupied.forEach(o => {
+            const cell = document.getElementById(`gc-${o.tramo}-${o.celda}`);
+            if (cell) {
+                cell.classList.add('occupied');
+                cell.title = o.medicamento;
+                cell.textContent = o.medicamento.substring(0, 6);
+            }
+        });
+    }
+
+    function resetGrid() {
+        document.querySelectorAll('.grid-cell').forEach(c => {
+            c.classList.remove('selected', 'occupied');
+            c.textContent = '';
+            c.title = '';
+        });
+        document.getElementById('TramoInput').value = '';
+        document.getElementById('CeldaInput').value = '';
+    }
+
+    function seleccionarCelda(el, silent = false) {
+        if (el.classList.contains('occupied')) return;
+
+        document.querySelectorAll('.grid-cell.selected').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+
+        const tramo = el.dataset.tramo;
+        const celda = el.dataset.celda;
+        const letra = el.dataset.letra;
+
+        document.getElementById('TramoInput').value = tramo;
+        document.getElementById('CeldaInput').value = celda;
+
+        if (!silent) {
+            document.getElementById('seleccion-texto').textContent = `Tramo ${letra} — Celda ${celda}`;
+        } else {
+            document.getElementById('seleccion-texto').textContent = `Ubicación actual: Tramo ${letra} — Celda ${celda}`;
+        }
+
+        const errSpan = document.querySelector('[data-valmsg-for="Tramo"]');
+        if (errSpan) errSpan.textContent = '';
+    }
+    </script>
 }

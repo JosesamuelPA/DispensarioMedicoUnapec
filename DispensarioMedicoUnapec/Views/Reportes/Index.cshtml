@@ -1,0 +1,158 @@
+@using DispensarioMedicoUnapec.Models
+@using DispensarioMedicoUnapec.Models.ViewModels
+@model ReporteViewModel
+
+@{
+    ViewData["Title"] = "Reportes del Dispensario";
+    var iconos = new Dictionary<TipoReporte, string> {
+        { TipoReporte.Pacientes,    "bi-people-fill" },
+        { TipoReporte.Medicos,      "bi-person-badge-fill" },
+        { TipoReporte.Medicamentos, "bi-capsule-pill" },
+        { TipoReporte.Visitas,      "bi-clipboard2-pulse-fill" },
+        { TipoReporte.Marcas,       "bi-patch-check-fill" },
+    };
+    var colores = new Dictionary<TipoReporte, string> {
+        { TipoReporte.Pacientes,    "primary" },
+        { TipoReporte.Medicos,      "success" },
+        { TipoReporte.Medicamentos, "warning" },
+        { TipoReporte.Visitas,      "info" },
+        { TipoReporte.Marcas,       "secondary" },
+    };
+    var icono = iconos.ContainsKey(Model.TipoSeleccionado) ? iconos[Model.TipoSeleccionado] : "bi-file-earmark-text";
+    var color = colores.ContainsKey(Model.TipoSeleccionado) ? colores[Model.TipoSeleccionado] : "primary";
+}
+
+<style>
+    #print-header { display: none; }
+    @@media print {
+        #sidebar, .navbar, .d-print-none { display: none !important; }
+        body, .main-content, main { background: white !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+        @@page { size: letter portrait; margin: 15mm; }
+        #print-header { display: flex !important; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #212529; padding-bottom: 10px; margin-bottom: 20px; }
+        .table-responsive { overflow: visible !important; }
+        .table { border-collapse: collapse !important; width: 100% !important; }
+        .table th { background-color: #f8f9fa !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        thead { display: table-header-group; }
+        tr { page-break-inside: avoid; }
+        .card { border: none !important; box-shadow: none !important; }
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Encabezado -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+                <i class="bi bi-file-earmark-bar-graph me-2"></i>Módulo de Reportes
+            </h1>
+            <p class="text-muted mt-1 mb-0">Genera y exporta reportes completos del Dispensario Médico APEC</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0 d-print-none">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill border border-primary-subtle">
+                <i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dd 'de' MMMM, yyyy")
+            </span>
+        </div>
+    </div>
+
+    <!-- Selector de tipo -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4 d-print-none">
+        <div class="card-body p-4">
+            <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-funnel me-2"></i>Seleccionar Tipo de Reporte</h6>
+            <form asp-action="Index" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label text-secondary fw-semibold small">Tipo de Reporte</label>
+                        <select asp-for="TipoSeleccionado"
+                                asp-items="Html.GetEnumSelectList<TipoReporte>()"
+                                class="form-select"
+                                onchange="this.form.submit()">
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill">
+                            <i class="bi bi-search me-2"></i>Generar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contenido del reporte -->
+    @if (Model.Resultados != null && Model.Resultados.Any())
+    {
+        <!-- Encabezado de la sección de resultados -->
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-2 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-3 bg-@(color) bg-opacity-10 text-@(color) d-flex align-items-center justify-content-center" style="width:44px;height:44px;">
+                        <i class="bi @icono fs-5"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0">Reporte de @Model.TipoSeleccionado</h5>
+                        <small class="text-muted">@Model.Resultados.Count() registros encontrados</small>
+                    </div>
+                </div>
+                <button onclick="window.print()" class="btn btn-outline-primary rounded-pill px-4 d-print-none">
+                    <i class="bi bi-printer me-2"></i>Imprimir / Exportar
+                </button>
+            </div>
+
+            <!-- Encabezado solo para impresión -->
+            <div id="print-header" class="px-4 pt-4">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-hospital fs-1 me-3 text-dark"></i>
+                    <div>
+                        <h3 class="m-0 fw-bold">Dispensario Médico</h3>
+                        <h5 class="m-0 text-muted">Universidad APEC</h5>
+                    </div>
+                </div>
+                <div class="text-end" style="font-size:0.9rem;">
+                    <strong>Tipo de Reporte:</strong> @Model.TipoSeleccionado<br>
+                    <strong>Fecha de emisión:</strong> @DateTime.Now.ToString("dd/MM/yyyy")<br>
+                    <strong>Hora:</strong> @DateTime.Now.ToString("HH:mm")
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    @switch (Model.TipoSeleccionado)
+                    {
+                        case TipoReporte.Pacientes:
+                            <partial name="_ReportePacientes" model="Model.Resultados" />
+                            break;
+                        case TipoReporte.Medicos:
+                            <partial name="_ReporteMedicos" model="Model.Resultados" />
+                            break;
+                        case TipoReporte.Medicamentos:
+                            <partial name="_ReporteMedicamentos" model="Model.Resultados" />
+                            break;
+                        case TipoReporte.Visitas:
+                            <partial name="_ReporteVisitas" model="Model.Resultados" />
+                            break;
+                        case TipoReporte.Marcas:
+                            <partial name="_ReporteMarcas" model="Model.Resultados" />
+                            break;
+                    }
+                </div>
+                <div class="px-4 pb-3 d-print-none">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Reporte generado el @DateTime.Now.ToString("dd/MM/yyyy") a las @DateTime.Now.ToString("HH:mm").
+                        Total: <strong>@Model.Resultados.Count()</strong> registros.
+                    </small>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body text-center py-5 text-muted">
+                <i class="bi bi-file-earmark-x fs-1 d-block mb-3 opacity-40"></i>
+                <span class="fs-6">No hay datos disponibles para el tipo de reporte seleccionado.</span>
+            </div>
+        </div>
+    }
+</div>

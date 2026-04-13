@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +22,42 @@ namespace DispensarioMedicoUnapec.Controllers
         }
 
         // GET: Tipo_Farmacos
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tipo_Farmacos.ToListAsync());
+            int pageSize = 10;
+            int totalItems = await _context.Tipo_Farmacos.CountAsync();
+            ViewBag.CurrentPage = 1;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            
+            return View(await _context.Tipo_Farmacos.Take(pageSize).ToListAsync());
+        }
+
+        // GET: Tipo_Farmacos/Filter
+        public async Task<IActionResult> Filter(string filter_name, string filter_estado, int page = 1)
+        {
+            int pageSize = 10;
+            var tipos = _context.Tipo_Farmacos.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter_name))
+            {
+                tipos = tipos.Where(m => m.Nombre.Contains(filter_name));
+            }
+            if (!string.IsNullOrEmpty(filter_estado) && filter_estado != "Todos")
+            {
+                if (Enum.TryParse<EstadoFarmaco>(filter_estado, out var estado))
+                {
+                    tipos = tipos.Where(m => m.EstadoFarmaco == estado);
+                }
+            }
+
+            int totalItems = await tipos.CountAsync();
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var pagedResults = await tipos.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return PartialView("_TipoFarmacosTable", pagedResults);
         }
 
         // GET: Tipo_Farmacos/Details/5

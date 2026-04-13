@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,10 +20,46 @@ namespace DispensarioMedicoUnapec.Controllers
         }
 
         // GET: Visitas
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Visitas.Include(v => v.Medico).Include(v => v.Paciente);
+            int pageSize = 10;
+            int totalItems = await _context.Visitas.CountAsync();
+            ViewBag.CurrentPage = 1;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            
+            var applicationDbContext = _context.Visitas.Include(v => v.Medico).Include(v => v.Paciente).OrderByDescending(v => v.Fecha).Take(pageSize);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Visitas/Filter
+        public async Task<IActionResult> Filter(string filter_paciente, string filter_medico, DateTime? filter_fecha, int page = 1)
+        {
+            int pageSize = 10;
+            var visitas = _context.Visitas.Include(v => v.Medico).Include(v => v.Paciente).AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter_paciente))
+            {
+                visitas = visitas.Where(v => v.Paciente.Nombre.Contains(filter_paciente) || v.Paciente.Apellido.Contains(filter_paciente) || v.Paciente.Cedula.Contains(filter_paciente));
+            }
+            if (!string.IsNullOrEmpty(filter_medico))
+            {
+                visitas = visitas.Where(v => v.Medico.Nombre.Contains(filter_medico) || v.Medico.Apellido.Contains(filter_medico));
+            }
+            if (filter_fecha.HasValue)
+            {
+                visitas = visitas.Where(v => v.Fecha.Date == filter_fecha.Value.Date);
+            }
+
+            visitas = visitas.OrderByDescending(v => v.Fecha);
+
+            int totalItems = await visitas.CountAsync();
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var pagedResults = await visitas.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return PartialView("_VisitasTable", pagedResults);
         }
 
         // GET: Visitas/Details/5
@@ -49,8 +85,11 @@ namespace DispensarioMedicoUnapec.Controllers
         // GET: Visitas/Create
         public IActionResult Create()
         {
-            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido");
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido");
+            var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
+            var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
+
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Nombre");
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Nombre");
             return View();
         }
 
@@ -67,8 +106,11 @@ namespace DispensarioMedicoUnapec.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido", visita.MedicoId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido", visita.PacienteId);
+            var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
+            var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
+
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Nombre", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Nombre", visita.PacienteId);
             return View(visita);
         }
 
@@ -85,8 +127,11 @@ namespace DispensarioMedicoUnapec.Controllers
             {
                 return NotFound();
             }
-            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido", visita.MedicoId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido", visita.PacienteId);
+            var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
+            var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
+
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Apellido", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Apellido", visita.PacienteId);
             return View(visita);
         }
 
@@ -122,8 +167,11 @@ namespace DispensarioMedicoUnapec.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MedicoId"] = new SelectList(_context.Medicos, "Id", "Apellido", visita.MedicoId);
-            ViewData["PacienteId"] = new SelectList(_context.Pacientes, "Id", "Apellido", visita.PacienteId);
+            var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
+            var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
+
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Apellido", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Apellido", visita.PacienteId);
             return View(visita);
         }
 

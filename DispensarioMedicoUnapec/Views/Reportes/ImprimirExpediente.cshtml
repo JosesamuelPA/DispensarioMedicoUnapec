@@ -1,0 +1,148 @@
+﻿@model DispensarioMedicoUnapec.Models.Paciente
+
+@{
+    Layout = null; // Quitamos el Layout general para que no salga el menú lateral
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expediente Médico - @Model.NombreCompleto</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        body {
+            background-color: white;
+            color: black;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .header-impresion {
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .seccion-titulo {
+            background-color: #f0f0f0;
+            padding: 8px 15px;
+            font-weight: bold;
+            border-left: 4px solid #0d6efd;
+            margin-bottom: 15px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    </style>
+</head>
+<body onload="window.print();">
+
+    <div class="container-fluid px-4 py-3">
+
+        <div class="header-impresion d-flex justify-content-between align-items-end">
+            <div>
+                <h2 class="m-0 fw-bold">Dispensario Médico</h2>
+                <h5 class="m-0 text-muted">Universidad APEC</h5>
+            </div>
+            <div class="text-end" style="font-size: 0.9rem;">
+                <strong>Documento:</strong> Historial Clínico<br>
+                <strong>Fecha de impresión:</strong> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")<br>
+            </div>
+        </div>
+
+        <h5 class="seccion-titulo">Datos del Paciente</h5>
+        <div class="row mb-4">
+            <div class="col-6">
+                <p class="mb-1"><strong>Nombre Completo:</strong> @Model.NombreCompleto</p>
+                <p class="mb-1"><strong>Cédula:</strong> @Model.Cedula</p>
+                <p class="mb-1"><strong>Fecha Nacimiento:</strong> @Model.FechaNacimiento.ToString("dd/MM/yyyy")</p>
+            </div>
+            <div class="col-6">
+                <p class="mb-1"><strong>Teléfono:</strong> @(string.IsNullOrEmpty(Model.Telefono) ? "N/A" : Model.Telefono)</p>
+                <p class="mb-1"><strong>Tipo de Paciente:</strong> @Model.Tipo_Paciente</p>
+                <p class="mb-1"><strong>No. Carnet:</strong> @(string.IsNullOrEmpty(Model.Numero_Carnet) ? "N/A" : Model.Numero_Carnet)</p>
+            </div>
+        </div>
+
+        <h5 class="seccion-titulo">Historial de Visitas Clínicas</h5>
+
+        @{
+            var visitas = ViewBag.HistorialVisitas as List<DispensarioMedicoUnapec.Models.Visita>;
+        }
+
+        @if (visitas != null && visitas.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Fecha</th>
+                        <th style="width: 50%;">Motivo de Consulta</th>
+                        <th style="width: 35%;">Médico Tratante</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var visita in visitas)
+                    {
+                        <tr>
+                            <td>@visita.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@visita.Motivo</td>
+                            <td>
+                                @if (visita.Medico != null)
+                                {
+                                    @($"Dr. {visita.Medico.Nombre} {visita.Medico.Apellido}")
+                                    <br>
+                                    <small class="text-muted">Esp: @visita.Medico.Especialidad</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Médico no asignado</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <p class="text-end mt-2"><small><em>Total de visitas registradas: @visitas.Count</em></small></p>
+        }
+        else
+        {
+            <div class="alert alert-light border text-center p-4">
+                No hay registros de visitas clínicas previas para este paciente.
+            </div>
+        }
+
+        <div class="row mt-5 pt-5 text-center" style="page-break-inside: avoid;">
+            <div class="col-6">
+                <hr style="width: 70%; border-top: 1px solid #000; margin: 0 auto;">
+                <p class="mt-2 mb-0"><strong>Sello del Dispensario</strong></p>
+            </div>
+            <div class="col-6">
+                <hr style="width: 70%; border-top: 1px solid #000; margin: 0 auto;">
+                <p class="mt-2 mb-0"><strong>Firma Autorizada</strong></p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

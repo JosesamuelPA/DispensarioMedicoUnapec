@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
@@ -52,8 +52,9 @@ namespace DispensarioMedicoUnapec.Controllers
                     // Creamos la "credencial" extrayendo los datos reales de la base de datos.
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, usuarioDb.Username),
-                        new Claim("Rol", usuarioDb.Rol ?? "Usuario") // Tomamos el rol de tu tabla
+                        new Claim(ClaimTypes.Name,   usuarioDb.Username),
+                        new Claim("Rol",             usuarioDb.Rol ?? "Usuario"),
+                        new Claim("NombreCompleto",  usuarioDb.NombreCompleto ?? string.Empty),
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

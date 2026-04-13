@@ -1,66 +1,75 @@
-﻿@model DispensarioMedicoUnapec.Models.Medico
+@model DispensarioMedicoUnapec.Models.Medico
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalle del Médico";
 }
 
-<h1>Details</h1>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-header bg-info text-white py-3 d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Ficha del Médico</h5>
+                    <span class="badge bg-light text-dark">@Model.EstadoMedico</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-12 text-center mb-4">
+                            <div class="display-1 text-info opacity-50 mb-2">
+                                <i class="bi bi-person-circle"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">@Model.Nombre @Model.Apellido</h3>
+                            <p class="text-muted"><i class="bi bi-journal-medical me-1"></i>@Model.Especialidad</p>
+                        </div>
+                    </div>
 
-<div>
-    <h4>Medico</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellido)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Apellido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaNacimiento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaNacimiento)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cedula)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cedula)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumeroCarnet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumeroCarnet)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TandaLaboral)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TandaLaboral)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Especialidad)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Especialidad)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EstadoMedico)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EstadoMedico)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                    <h6 class="text-secondary fw-bold border-bottom pb-2 mb-3">Datos Personales</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-light rounded shadow-sm">
+                                <small class="text-muted d-block fw-semibold mb-1">Cédula de Identidad</small>
+                                <span class="fs-6">@Model.Cedula</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-light rounded shadow-sm">
+                                <small class="text-muted d-block fw-semibold mb-1">Fecha de Nacimiento</small>
+                                <span class="fs-6">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-secondary fw-bold border-bottom pb-2 mb-3">Datos Profesionales e Institucionales</h6>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-light rounded shadow-sm h-100">
+                                <small class="text-muted d-block fw-semibold mb-1"><i class="bi bi-clock-history me-1"></i> Horario (Tanda)</small>
+                                <span class="fs-6 d-flex align-items-center">
+                                    @if (Model.TandaLaboral.ToString().Contains("Matutina"))
+                                    {
+                                        <i class="bi bi-sunrise text-warning me-2"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-sunset text-primary me-2"></i>
+                                    }
+                                    @Model.TandaLaboral
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="p-3 bg-light rounded shadow-sm h-100">
+                                <small class="text-muted d-block fw-semibold mb-1"><i class="bi bi-card-heading me-1"></i> Carnet / Exequátur</small>
+                                <span class="fs-6">@(string.IsNullOrEmpty(Model.NumeroCarnet) ? "N/A" : Model.NumeroCarnet)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white p-3 border-top d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Regresar al listado</a>
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="bi bi-pencil-square me-2"></i>Editar Datos</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

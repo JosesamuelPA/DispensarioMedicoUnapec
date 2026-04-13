@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +22,39 @@ namespace DispensarioMedicoUnapec.Controllers
         }
 
         // GET: Marcas
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Marcas.ToListAsync());
+            int pageSize = 10;
+            int totalItems = await _context.Marcas.CountAsync();
+            ViewBag.CurrentPage = 1;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            
+            return View(await _context.Marcas.Take(pageSize).ToListAsync());
+        }
+
+        // GET: Marcas/Filter
+        public async Task<IActionResult> Filter(string filter_name, string filter_pais, int page = 1)
+        {
+            int pageSize = 10;
+            var marcas = _context.Marcas.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter_name))
+            {
+                marcas = marcas.Where(m => m.Nombre.Contains(filter_name) || m.Descripcion.Contains(filter_name));
+            }
+            if (!string.IsNullOrEmpty(filter_pais))
+            {
+                marcas = marcas.Where(m => m.Pais.Contains(filter_pais));
+            }
+
+            int totalItems = await marcas.CountAsync();
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var pagedResults = await marcas.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return PartialView("_MarcasTable", pagedResults);
         }
 
         // GET: Marcas/Details/5

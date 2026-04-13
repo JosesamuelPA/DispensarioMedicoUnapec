@@ -1,44 +1,83 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Marca>
+@model IEnumerable<DispensarioMedicoUnapec.Models.Marca>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Marcas</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+            <i class="bi bi-patch-check-fill me-2"></i>Marcas Comerciales
+        </h1>
+        <p class="text-muted mt-1 mb-0">Laboratorios proveedores de medicamentos</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Marca
+        </a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Crear nueva marca</a>
-</p>
-<table class="table table-bordered table-hover text-center">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descripcion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Pais)
-            </th>
-            <th>Gestionar</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nombre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descripcion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Pais)
-                </td>
-                <partial name="_MenuOptions" model="item.Id" />
-            </tr>
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <input name="filter_name" class="form-control" placeholder="Buscar por Nombre o Descripción..." />
+                </div>
+                <div class="col-md-5">
+                    <input name="filter_pais" class="form-control" placeholder="País de origen" />
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100" title="Buscar"><i class="bi bi-search"></i></button>
+                    <button type="button" id="btnLimpiar" class="btn btn-secondary w-100" title="Limpiar"><i class="bi bi-eraser"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="table-container">
+    <partial name="_MarcasTable" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Marcas")',
+                    type: 'GET',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#table-container').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al filtrar: ", error);
+                    }
+                });
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#filterForm')[0].reset();
+                $('#filterForm').submit();
+            });
+        });
+
+        function loadPage(page) {
+            var data = $('#filterForm').serialize() + '&page=' + page;
+            $.ajax({
+                url: '@Url.Action("Filter", "Marcas")',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#table-container').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en paginación: ", error);
+                }
+            });
         }
-    </tbody>
-</table>
+    </script>
+}

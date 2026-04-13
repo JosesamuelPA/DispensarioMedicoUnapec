@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +22,61 @@ namespace DispensarioMedicoUnapec.Controllers
         }
 
         // GET: Medicos
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Medicos.ToListAsync());
+            int pageSize = 10;
+            int totalItems = await _context.Medicos.CountAsync();
+            ViewBag.CurrentPage = 1;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            
+            return View(await _context.Medicos.Take(pageSize).ToListAsync());
+        }
+
+        // GET: Medicos/Filter
+        public async Task<IActionResult> Filter(string filter_name, string filter_lastName, string filter_cedula, string filter_tanda, string filter_especialidad, string filter_status, int page = 1)
+        {
+            int pageSize = 10;
+            var medicos = _context.Medicos.AsQueryable();
+
+            if (!string.IsNullOrEmpty(filter_name))
+            {
+                medicos = medicos.Where(m => m.Nombre.Contains(filter_name));
+            }
+            if (!string.IsNullOrEmpty(filter_lastName))
+            {
+                medicos = medicos.Where(m => m.Apellido.Contains(filter_lastName));
+            }
+            if (!string.IsNullOrEmpty(filter_cedula))
+            {
+                medicos = medicos.Where(m => m.Cedula.Contains(filter_cedula));
+            }
+            if (!string.IsNullOrEmpty(filter_especialidad))
+            {
+                medicos = medicos.Where(m => m.Especialidad.Contains(filter_especialidad));
+            }
+            if (!string.IsNullOrEmpty(filter_tanda) && filter_tanda != "Todos")
+            {
+                if (Enum.TryParse<TandaLaboral>(filter_tanda, out var tanda))
+                {
+                    medicos = medicos.Where(m => m.TandaLaboral == tanda);
+                }
+            }
+            if (!string.IsNullOrEmpty(filter_status) && filter_status != "Todos")
+            {
+                if (Enum.TryParse<EstadoMedico>(filter_status, out var estado))
+                {
+                    medicos = medicos.Where(m => m.EstadoMedico == estado);
+                }
+            }
+
+            int totalItems = await medicos.CountAsync();
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            var pagedResults = await medicos.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return PartialView("_MedicosTable", pagedResults);
         }
 
         // GET: Medicos/Details/5

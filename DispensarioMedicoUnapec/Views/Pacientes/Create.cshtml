@@ -1,85 +1,91 @@
-﻿@model DispensarioMedicoUnapec.Models.Paciente
+@model DispensarioMedicoUnapec.Models.Paciente
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuevo Paciente";
 }
 
-<h1>Create</h1>
-
-<h4>Paciente</h4>
-<hr />
-<form asp-action="Create">
-    <div class="card shadow mb-4 col-md-8">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Registrar Nuevo Paciente</h6>
-        </div>
-        <div class="card-body">
-
-            <div class="">
-                <div class="col-md-6">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="Nombre" class="control-label"></label>
-                        <input asp-for="Nombre" class="form-control" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Apellido" class="control-label"></label>
-                        <input asp-for="Apellido" class="form-control" />
-                        <span asp-validation-for="Apellido" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="FechaNacimiento" class="control-label"></label>
-                        <input asp-for="FechaNacimiento" class="form-control" />
-                        <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Cedula" class="control-label"></label>
-                        <input asp-for="Cedula" class="form-control" />
-                        <span asp-validation-for="Cedula" class="text-danger"></span>
-                    </div>
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white pt-4 pb-3">
+                    <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Registrar Nuevo Paciente</h5>
                 </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="Telefono" class="control-label"></label>
-                        <input asp-for="Telefono" class="form-control" />
-                        <span asp-validation-for="Telefono" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Numero_Carnet" class="control-label"></label>
-                        <input asp-for="Numero_Carnet" class="form-control" />
-                        <span asp-validation-for="Numero_Carnet" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Tipo_Paciente" class="control-label"></label>
-                        <select asp-for="Tipo_Paciente" class="form-control" asp-items="Html.GetEnumSelectList<DispensarioMedicoUnapec.Models.TipoPaciente>()">
-                            <option value="">-- Seleciona un tipo de paciente --</option>
-                        </select>
-                        <span asp-validation-for="Tipo_Paciente" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Estado_Paciente" class="control-label"></label>
-                        <select asp-for="Estado_Paciente" class="form-control" asp-items="Html.GetEnumSelectList<DispensarioMedicoUnapec.Models.EstadoPaciente>()">
-                            <option value="">-- Seleciona un Estado --</option>
-                        </select>
-                        <span asp-validation-for="Estado_Paciente" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary my-2" />
-                    </div>
+                        <div class="row g-4">
+                            <!-- Columna Izquierda -->
+                            <div class="col-md-6">
+                                <h6 class="text-muted border-bottom pb-2 mb-3">Información Personal</h6>
+                                
+                                <div class="form-group mb-3">
+                                    <label asp-for="Nombre" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Nombre" class="form-control" placeholder="Ej. Juan" />
+                                    <span asp-validation-for="Nombre" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Apellido" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Apellido" class="form-control" placeholder="Ej. Pérez" />
+                                    <span asp-validation-for="Apellido" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="FechaNacimiento" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="FechaNacimiento" type="date" class="form-control" />
+                                    <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Cedula" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Cedula" class="form-control" placeholder="000-0000000-0" />
+                                    <span asp-validation-for="Cedula" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Columna Derecha -->
+                            <div class="col-md-6">
+                                <h6 class="text-muted border-bottom pb-2 mb-3">Contacto y Estado</h6>
+                                
+                                <div class="form-group mb-3">
+                                    <label asp-for="Telefono" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Telefono" class="form-control" placeholder="809-000-0000" />
+                                    <span asp-validation-for="Telefono" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Numero_Carnet" class="form-label text-secondary fw-semibold"></label>
+                                    <input asp-for="Numero_Carnet" class="form-control" placeholder="Opcional" />
+                                    <span asp-validation-for="Numero_Carnet" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="Tipo_Paciente" class="form-label text-secondary fw-semibold"></label>
+                                    <select asp-for="Tipo_Paciente" class="form-select" asp-items="Html.GetEnumSelectList<DispensarioMedicoUnapec.Models.TipoPaciente>()">
+                                        <option value="">-- Selecciona un tipo --</option>
+                                    </select>
+                                    <span asp-validation-for="Tipo_Paciente" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group mb-4">
+                                    <label asp-for="Estado_Paciente" class="form-label text-secondary fw-semibold"></label>
+                                    <select asp-for="Estado_Paciente" class="form-select">
+                                        <option value="">-- Selecciona un Estado --</option>
+                                        <option value="0">Activo</option>
+                                        <option value="1">Inactivo</option>
+                                    </select>
+                                    <span asp-validation-for="Estado_Paciente" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-light border px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i>Guardar Paciente</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -1,53 +1,86 @@
-﻿@model IEnumerable<DispensarioMedicoUnapec.Models.Visita>
+@model IEnumerable<DispensarioMedicoUnapec.Models.Visita>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h1 class="h3 fw-bold mb-0" style="color:#0d7ff2;">
+            <i class="bi bi-clipboard2-pulse-fill me-2"></i>Visitas y Consultas
+        </h1>
+        <p class="text-muted mt-1 mb-0">Registro histórico de consultas médicas y atención</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Consulta
+        </a>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Paciente)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Medico)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Motivo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fecha)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Paciente.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Medico.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Motivo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fecha)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input name="filter_paciente" class="form-control" placeholder="Buscar Paciente..." />
+                </div>
+                <div class="col-md-3">
+                    <input name="filter_medico" class="form-control" placeholder="Buscar Médico..." />
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="filter_fecha" class="form-control" title="Filtrar por Fecha" />
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-success w-100" title="Buscar"><i class="bi bi-search"></i></button>
+                    <button type="button" id="btnLimpiar" class="btn btn-secondary w-100" title="Limpiar"><i class="bi bi-eraser"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="table-container">
+    <partial name="_VisitasTable" model="Model" />
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Visitas")',
+                    type: 'GET',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        $('#table-container').html(result);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al filtrar: ", error);
+                    }
+                });
+            });
+
+            $('#btnLimpiar').on('click', function () {
+                $('#filterForm')[0].reset();
+                $('#filterForm').submit();
+            });
+        });
+
+        function loadPage(page) {
+            var data = $('#filterForm').serialize() + '&page=' + page;
+            $.ajax({
+                url: '@Url.Action("Filter", "Visitas")',
+                type: 'GET',
+                data: data,
+                success: function (result) {
+                    $('#table-container').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error en paginación: ", error);
+                }
+            });
+        }
+    </script>
 }
-    </tbody>
-</table>

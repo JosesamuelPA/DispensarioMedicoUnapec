@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DispensarioMedicoUnapec.Models
 {
@@ -21,12 +22,20 @@ namespace DispensarioMedicoUnapec.Models
     {
         [Key]
         public int Id { get; set; }
-        // Utilizar Letras para Tramo y numeros para Celda A1 = Primer Tramo, Primera Celda
+        [Required(ErrorMessage = "Debe asignar esta ubicación a un Estante")]
+        [Display(Name = "Estante Asignado")]
+        public int EstanteId { get; set; }
         
-        [Required]
-        [StringLength(255)]
-        public string Estante { get; set; }
-        
+        [ForeignKey("EstanteId")]
+        public virtual Estante? Estante { get; set; }
+
+        [Required(ErrorMessage = "Debe seleccionar qué medicamento se guardará aquí")]
+        [Display(Name = "Medicamento Almacenado")]
+        public int MedicamentoId { get; set; }
+
+        [ForeignKey("MedicamentoId")]
+        public virtual Medicamento? Medicamento { get; set; }
+
         [Required]
         public TramoEstante Tramo { get; set; }
 
