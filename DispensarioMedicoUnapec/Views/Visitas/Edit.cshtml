@@ -20,12 +20,12 @@
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label asp-for="PacienteId" class="form-label text-secondary fw-semibold">Paciente</label>
-                                    <select asp-for="PacienteId" class="form-select" asp-items="ViewBag.PacienteId"></select>
+                                    <select asp-for="PacienteId" class="form-select select-search" asp-items="ViewBag.PacienteId"></select>
                                     <span asp-validation-for="PacienteId" class="text-danger small"></span>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label asp-for="MedicoId" class="form-label text-secondary fw-semibold">Médico Asignado</label>
-                                    <select asp-for="MedicoId" class="form-select" asp-items="ViewBag.MedicoId"></select>
+                                    <select asp-for="MedicoId" class="form-select select-search" asp-items="ViewBag.MedicoId"></select>
                                     <span asp-validation-for="MedicoId" class="text-danger small"></span>
                                 </div>
                             </div>
@@ -57,4 +57,13 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            $('.select-search').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Seleccione una opción',
+            });
+        });
+    </script>
 }

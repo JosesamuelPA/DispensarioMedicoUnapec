@@ -88,8 +88,8 @@ namespace DispensarioMedicoUnapec.Controllers
             var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
             var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
 
-            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Nombre");
-            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Nombre");
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "InfoDisplay");
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "InfoDisplay");
             return View();
         }
 
@@ -109,8 +109,8 @@ namespace DispensarioMedicoUnapec.Controllers
             var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
             var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
 
-            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Nombre", visita.MedicoId);
-            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Nombre", visita.PacienteId);
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "InfoDisplay", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "InfoDisplay", visita.PacienteId);
             return View(visita);
         }
 
@@ -130,8 +130,8 @@ namespace DispensarioMedicoUnapec.Controllers
             var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
             var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
 
-            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Apellido", visita.MedicoId);
-            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Apellido", visita.PacienteId);
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "InfoDisplay", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "InfoDisplay", visita.PacienteId);
             return View(visita);
         }
 
@@ -170,8 +170,8 @@ namespace DispensarioMedicoUnapec.Controllers
             var medicosActivos = _context.Medicos.Where(m => m.EstadoMedico == EstadoMedico.A).ToList();
             var pacientesActivos = _context.Pacientes.Where(p => p.Estado_Paciente == EstadoPaciente.A).ToList();
 
-            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "Apellido", visita.MedicoId);
-            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "Apellido", visita.PacienteId);
+            ViewData["MedicoId"] = new SelectList(medicosActivos, "Id", "InfoDisplay", visita.MedicoId);
+            ViewData["PacienteId"] = new SelectList(pacientesActivos, "Id", "InfoDisplay", visita.PacienteId);
             return View(visita);
         }
 
