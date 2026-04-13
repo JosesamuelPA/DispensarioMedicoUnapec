@@ -20,7 +20,6 @@ namespace DispensarioMedicoUnapec.Data
         public DbSet<Ubicacion_Medicamento> Ubicacion_Medicamentos { get; set; }
         public DbSet<Medico> Medicos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
-        
-
+        public DbSet<Visita> Visitas { get; set; }
     }
 }

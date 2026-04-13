@@ -63,16 +63,16 @@ namespace DispensarioMedicoUnapec.Data
             // 3. Crear Medicamentos con Marcas asignadas
             var medicamentos = new Medicamento[]
             {
-                new Medicamento { Nombre = "Acetaminofén", Descripcion = "Analgésico contra la fiebre y dolor leve", Dosis = "500mg", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[0].Id },
-                new Medicamento { Nombre = "Amoxicilina", Descripcion = "Antibiótico de amplio espectro", Dosis = "500mg", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[1].Id },
-                new Medicamento { Nombre = "Diclofenac Gel", Descripcion = "Antiinflamatorio tópico", Dosis = "1%", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[2].Id, MarcaId = marcas[2].Id },
-                new Medicamento { Nombre = "Salbutamol", Descripcion = "Broncodilatador para el asma", Dosis = "100mcg", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[3].Id, MarcaId = marcas[3].Id },
-                new Medicamento { Nombre = "Ibuprofeno", Descripcion = "Antiinflamatorio no esteroideo", Dosis = "400mg", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[0].Id },
-                new Medicamento { Nombre = "Loratadina Jarabe", Descripcion = "Antihistamínico para alergias", Dosis = "5mg/5ml", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[1].Id, MarcaId = marcas[2].Id },
-                new Medicamento { Nombre = "Clotrimazol Crema", Descripcion = "Antimicótico para la piel", Dosis = "1%", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[2].Id, MarcaId = marcas[3].Id },
-                new Medicamento { Nombre = "Budesonida Spray", Descripcion = "Corticosteroide nasal", Dosis = "50mcg", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[3].Id, MarcaId = marcas[0].Id },
-                new Medicamento { Nombre = "Omeprazol", Descripcion = "Protector gástrico y antiácido", Dosis = "20mg", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[1].Id },
-                new Medicamento { Nombre = "Insulina Glargina", Descripcion = "Tratamiento para diabetes avanzada", Dosis = "100 UI/ml", Estado = "Activo", Id_Tipo_Farmaco = tiposFarmaco[1].Id, MarcaId = marcas[4].Id }
+                new Medicamento { Nombre = "Acetaminofén", Descripcion = "Analgésico contra la fiebre y dolor leve", Dosis = "500mg", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[0].Id },
+                new Medicamento { Nombre = "Amoxicilina", Descripcion = "Antibiótico de amplio espectro", Dosis = "500mg", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[1].Id },
+                new Medicamento { Nombre = "Diclofenac Gel", Descripcion = "Antiinflamatorio tópico", Dosis = "1%", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[2].Id, MarcaId = marcas[2].Id },
+                new Medicamento { Nombre = "Salbutamol", Descripcion = "Broncodilatador para el asma", Dosis = "100mcg", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[3].Id, MarcaId = marcas[3].Id },
+                new Medicamento { Nombre = "Ibuprofeno", Descripcion = "Antiinflamatorio no esteroideo", Dosis = "400mg", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[0].Id },
+                new Medicamento { Nombre = "Loratadina Jarabe", Descripcion = "Antihistamínico para alergias", Dosis = "5mg/5ml", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[1].Id, MarcaId = marcas[2].Id },
+                new Medicamento { Nombre = "Clotrimazol Crema", Descripcion = "Antimicótico para la piel", Dosis = "1%", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[2].Id, MarcaId = marcas[3].Id },
+                new Medicamento { Nombre = "Budesonida Spray", Descripcion = "Corticosteroide nasal", Dosis = "50mcg", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[3].Id, MarcaId = marcas[0].Id },
+                new Medicamento { Nombre = "Omeprazol", Descripcion = "Protector gástrico y antiácido", Dosis = "20mg", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[0].Id, MarcaId = marcas[1].Id },
+                new Medicamento { Nombre = "Insulina Glargina", Descripcion = "Tratamiento para diabetes avanzada", Dosis = "100 UI/ml", Estado = "Disponible", Id_Tipo_Farmaco = tiposFarmaco[1].Id, MarcaId = marcas[4].Id }
             };
             context.Medicamentos.AddRange(medicamentos);
             context.SaveChanges();
